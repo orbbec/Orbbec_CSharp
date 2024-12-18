@@ -46,7 +46,7 @@ namespace Orbbec
                         int pid = addedList.Pid(i);
                         if (pid == 0x066B || pid == 0x0669)
                         {
-                            MessageBox.Show(addedList.Name(i) + " 不支持当前固件升级方法");
+                            MessageBox.Show(addedList.Name(i) + " does not support the current firmware upgrade method");
                             continue;
                         }
                         string serialNumber = addedList.SerialNumber(0);
@@ -78,7 +78,7 @@ namespace Orbbec
                         int pid = deviceList.Pid(i);
                         if (pid == 0x066B || pid == 0x0669)
                         {
-                            MessageBox.Show(deviceList.Name(i) + " 不支持当前固件升级方法");
+                            MessageBox.Show(deviceList.Name(i) + " does not support the current firmware upgrade method");
                             continue;
                         }
                         var device = deviceList.GetDevice(i);
