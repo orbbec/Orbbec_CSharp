@@ -93,10 +93,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_device_get_device_info(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return new DeviceInfo(handle);
         }
 
@@ -115,10 +112,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_device_get_sensor_list(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return new SensorList(handle);
         }
 
@@ -139,10 +133,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_device_get_sensor(_handle.Ptr, sensorType, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return new Sensor(handle);
         }
 
@@ -163,10 +154,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_device_set_int_property(_handle.Ptr, propertyId, property, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         /**
@@ -186,10 +174,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             Int32 value = obNative.ob_device_get_int_property(_handle.Ptr, propertyId, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return value;
         }
 
@@ -210,10 +195,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_device_set_float_property(_handle.Ptr, propertyId, property, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         /**
@@ -233,10 +215,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             float value = obNative.ob_device_get_float_property(_handle.Ptr, propertyId, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return value;
         }
 
@@ -257,10 +236,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_device_set_bool_property(_handle.Ptr, propertyId, property, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         /**
@@ -280,10 +256,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             bool value = obNative.ob_device_get_bool_property(_handle.Ptr, propertyId, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return value;
         }
 
@@ -311,10 +284,7 @@ namespace Orbbec
                 Marshal.StructureToPtr(data, dataPtr, false);
 
                 obNative.ob_device_set_structured_data(_handle.Ptr, propertyId, dataPtr, dataSize, ref error);
-                if (error != IntPtr.Zero)
-                {
-                    throw new NativeException(new Error(error));
-                }
+                NativeException.HandleError(error);
             }
             finally
             {
@@ -346,10 +316,7 @@ namespace Orbbec
             try
             {
                 obNative.ob_device_get_structured_data(_handle.Ptr, propertyId, dataPtr, ref dataSize, ref error);
-                if (error != IntPtr.Zero)
-                {
-                    throw new NativeException(new Error(error));
-                }
+                NativeException.HandleError(error);
 
                 data = Marshal.PtrToStructure<T>(dataPtr);
             }
@@ -378,10 +345,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             bool isSupported = obNative.ob_device_is_property_supported(_handle.Ptr, propertyId, permissionType, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return isSupported;
         }
 
@@ -403,10 +367,7 @@ namespace Orbbec
             IntPtr error = IntPtr.Zero;
             IntPropertyRange range;
             obNative.ob_device_get_int_property_range(out range, _handle.Ptr, propertyId, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return range;
         }
 
@@ -428,10 +389,7 @@ namespace Orbbec
             IntPtr error = IntPtr.Zero;
             FloatPropertyRange range;
             obNative.ob_device_get_float_property_range(out range, _handle.Ptr, propertyId, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return range;
         }
 
@@ -453,10 +411,7 @@ namespace Orbbec
             IntPtr error = IntPtr.Zero;
             BoolPropertyRange range;
             obNative.ob_device_get_bool_property_range(out range, _handle.Ptr, propertyId, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return range;
         }
 
@@ -475,10 +430,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             UInt32 count = obNative.ob_device_get_supported_property_count(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return count;
         }
 
@@ -500,10 +452,7 @@ namespace Orbbec
             IntPtr error = IntPtr.Zero;
             PropertyItem propertyItem;
             obNative.ob_device_get_supported_property_item(out propertyItem, _handle.Ptr, index, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return propertyItem;
         }
 
@@ -527,10 +476,7 @@ namespace Orbbec
             _deviceUpgradeCallback = callback;
             IntPtr error = IntPtr.Zero;
             obNative.ob_device_update_firmware(_handle.Ptr, filePath, _nativeDeviceUpgradeCallback, async, IntPtr.Zero, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         public void DeviceUpgradeFromData(byte[] fileData, DeviceUpgradeCallback callback, bool async = true)
@@ -540,10 +486,8 @@ namespace Orbbec
             GCHandle gcHandle = GCHandle.Alloc(fileData, GCHandleType.Pinned);
             IntPtr intPtr = gcHandle.AddrOfPinnedObject();
             obNative.ob_device_update_firmware_from_data(_handle.Ptr, intPtr, (UInt32)fileData.Length, _nativeDeviceUpgradeCallback, async, IntPtr.Zero, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            gcHandle.Free();
+            NativeException.HandleError(error);
         }
 
         /**
@@ -559,10 +503,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             UInt64 state = obNative.ob_device_get_device_state(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return state;
         }
 
@@ -582,10 +523,7 @@ namespace Orbbec
             _deviceStateCallback = callback;
             IntPtr error = IntPtr.Zero;
             obNative.ob_device_set_state_changed_callback(_handle.Ptr, _nativeDeviceStateCallback, IntPtr.Zero, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         /**
@@ -606,10 +544,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_device_get_calibration_camera_param_list(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return new CameraParamList(handle);
         }
 
@@ -629,10 +564,7 @@ namespace Orbbec
             IntPtr error = IntPtr.Zero;
             DepthWorkMode workMode;
             obNative.ob_device_get_current_depth_work_mode(out workMode, _handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return workMode;
         }
 
@@ -640,10 +572,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr ptr = obNative.ob_device_get_current_depth_work_mode_name(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return Marshal.PtrToStringAnsi(ptr);
         }
 
@@ -666,10 +595,7 @@ namespace Orbbec
             IntPtr ptr = gcHandle.AddrOfPinnedObject();
             obNative.ob_device_switch_depth_work_mode(_handle.Ptr, ptr, ref error);
             gcHandle.Free();
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         /**
@@ -688,10 +614,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_device_switch_depth_work_mode_by_name(_handle.Ptr, modeName, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         /**
@@ -708,10 +631,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr ptr = obNative.ob_device_get_depth_work_mode_list(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return new DepthWorkModeList(ptr);
         }
 
@@ -730,20 +650,14 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_device_reboot(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         public UInt16 GetSupportedMultiDeviceSyncModeBitmap()
         {
             IntPtr error = IntPtr.Zero;
             UInt16 result = obNative.ob_device_get_supported_multi_device_sync_mode_bitmap(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return result;
         }
 
@@ -753,10 +667,8 @@ namespace Orbbec
             GCHandle gcHandle = GCHandle.Alloc(config, GCHandleType.Pinned);
             IntPtr ptr = gcHandle.AddrOfPinnedObject();
             obNative.ob_device_set_multi_device_sync_config(_handle.Ptr, ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            gcHandle.Free();
+            NativeException.HandleError(error);
         }
 
         public MultiDeviceSyncConfig GetMultiDeviceSyncConfig()
@@ -764,10 +676,7 @@ namespace Orbbec
             IntPtr error = IntPtr.Zero;
             MultiDeviceSyncConfig config;
             obNative.ob_device_get_multi_device_sync_config(out config, _handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return config;
         }
 
@@ -775,10 +684,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_device_trigger_capture(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         public void SetTimestampResetConfig(DeviceTimestampResetConfig config)
@@ -787,20 +693,15 @@ namespace Orbbec
             GCHandle gcHandle = GCHandle.Alloc(config, GCHandleType.Pinned);
             IntPtr ptr = gcHandle.AddrOfPinnedObject();
             obNative.ob_device_set_timestamp_reset_config(_handle.Ptr, ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            gcHandle.Free();
+            NativeException.HandleError(error);
         }
 
         public DeviceTimestampResetConfig GetTimestampResetConfig()
         {
             IntPtr error = IntPtr.Zero;
             DeviceTimestampResetConfig config = obNative.ob_device_get_timestamp_reset_config(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return config;
         }
 
@@ -808,50 +709,35 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_device_timestamp_reset(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         public void TimerSyncWithHost()
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_device_timer_sync_with_host(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         public void EnableHeartbeat(bool enable)
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_device_enable_heartbeat(_handle.Ptr, enable, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         public void SendAndReceiveData(IntPtr sendData, UInt32 sendDataSize, IntPtr receiveData, ref UInt32 receiveDataSize)
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_device_send_and_receive_data(_handle.Ptr, sendData, sendDataSize, receiveData, ref receiveDataSize, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         public bool IsExtensionInfoExist(String infoKey)
         {
             IntPtr error = IntPtr.Zero;
             bool result = obNative.ob_device_is_extension_info_exist(_handle.Ptr, infoKey, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return result;
         }
 
@@ -859,10 +745,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr ptr = obNative.ob_device_get_extension_info(_handle.Ptr, infoKey, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return Marshal.PtrToStringAnsi(ptr);
         }
 
@@ -870,10 +753,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             bool result = obNative.ob_device_is_global_timestamp_supported(_handle.Ptr, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return result;
         }
 
@@ -881,10 +761,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             bool result = obNative.ob_device_enable_global_timestamp(_handle.Ptr, enable, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return result;
         }
 
@@ -892,10 +769,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr ptr = obNative.ob_device_get_current_preset_name(_handle.Ptr, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return Marshal.PtrToStringAnsi(ptr);
         }
 
@@ -903,70 +777,49 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_device_load_preset(_handle.Ptr, presetName, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         public void LoadPresetFromJsonFile(String jsonFilePath)
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_device_load_preset_from_json_file(_handle.Ptr, jsonFilePath, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         public void LoadPresetFromJsonData(String presetName, IntPtr data, UInt32 size)
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_device_load_preset_from_json_data(_handle.Ptr, presetName, data, size, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         public void ExportCurrentSettingsAsPresetJsonFile(String jsonFilePath)
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_device_export_current_settings_as_preset_json_file(_handle.Ptr, jsonFilePath, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         public void ExportCurrentSettingsAsPresetJsonData(String presetName, IntPtr data, UInt32 size)
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_device_export_current_settings_as_preset_json_data(_handle.Ptr, presetName, data, size, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         internal void Delete(IntPtr handle)
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_delete_device(handle, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         public PresetList GetPresetList()
         {
             IntPtr error = IntPtr.Zero;
             IntPtr ptr = obNative.ob_device_get_available_preset_list(_handle.Ptr, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return new PresetList(ptr);
         }
 

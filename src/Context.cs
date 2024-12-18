@@ -51,10 +51,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_create_context(ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             _handle = new NativeHandle(handle, Delete);
             _nativeDeviceChangedCallback = new NativeDeviceChangedCallback(OnDeviceChanged);
             _nativeLogCallback = new NativeLogCallback(OnLogCallback);
@@ -74,10 +71,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_create_context_with_config(configPath, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             _handle = new NativeHandle(handle, Delete);
             _nativeDeviceChangedCallback = new NativeDeviceChangedCallback(OnDeviceChanged);
         }
@@ -97,10 +91,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_query_device_list(_handle.Ptr, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return new DeviceList(handle);
         }
 
@@ -108,10 +99,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_enable_net_device_enumeration(_handle.Ptr, enable, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         /**
@@ -125,10 +113,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_create_net_device(_handle.Ptr, address, port, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return new Device(handle);
         }
 
@@ -148,10 +133,7 @@ namespace Orbbec
             _deviceChangedCallback = callback;
             IntPtr error = IntPtr.Zero;
             obNative.ob_set_device_changed_callback(_handle.Ptr, _nativeDeviceChangedCallback, IntPtr.Zero, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         /**
@@ -169,10 +151,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_enable_device_clock_sync(_handle.Ptr, repeatInterval, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         /**
@@ -190,10 +169,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_set_logger_severity(logSeverity, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         /**
@@ -213,10 +189,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_set_logger_to_file(logSeverity, directory, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         /**
@@ -234,10 +207,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_set_logger_to_console(logSeverity, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         public static void SetLoggerCallback(LogSeverity logSeverity, LogCallback callback)
@@ -245,10 +215,7 @@ namespace Orbbec
             _logCallback = callback;
             IntPtr error = IntPtr.Zero;
             obNative.ob_set_logger_to_callback(logSeverity, _nativeLogCallback, IntPtr.Zero, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         /**
@@ -273,20 +240,14 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_set_extensions_directory(directory, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         internal void Delete(IntPtr handle)
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_delete_context(handle, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         public void Dispose()

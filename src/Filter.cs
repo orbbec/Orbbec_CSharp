@@ -32,40 +32,25 @@ namespace Orbbec
             IntPtr error = IntPtr.Zero;
 
             _name = Marshal.PtrToStringAnsi(obNative.ob_filter_get_name(_handle.Ptr, ref error));
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
 
             IntPtr configSchemaListPtr = obNative.ob_filter_get_config_schema_list(_handle.Ptr, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
 
             uint count = obNative.ob_filter_config_schema_list_get_count(configSchemaListPtr, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
 
             for (uint i = 0; i < count; i++)
             {
                 FilterConfigSchemaItem item;
                 obNative.ob_filter_config_schema_list_get_item(out item, configSchemaListPtr, i, ref error);
-                if (error != IntPtr.Zero)
-                {
-                    throw new NativeException(new Error(error));
-                }
+                NativeException.HandleError(error);
 
                 _configSchemaList.Add(item);
             }
 
             obNative.ob_delete_filter_config_schema_list(configSchemaListPtr, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         protected T GetPropertyRange<T>(string configName, Func<double, T> rangeFactory) where T : struct
@@ -77,10 +62,7 @@ namespace Orbbec
 
             IntPtr error = IntPtr.Zero;
             var cur = obNative.ob_filter_get_config_value(_handle.Ptr, configName, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
 
             return rangeFactory(cur);
         }
@@ -136,10 +118,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_create_private_filter(name, activationKey, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return new Filter(handle);
         }
 
@@ -154,10 +133,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_filter_reset(_handle.Ptr, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         /**
@@ -200,10 +176,7 @@ namespace Orbbec
             _callback = callback;
             IntPtr error = IntPtr.Zero;
             obNative.ob_filter_set_callback(_handle.Ptr, _nativeCallback, IntPtr.Zero, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         /**
@@ -221,10 +194,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_filter_push_frame(_handle.Ptr, frame.GetNativeHandle().Ptr, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         /**
@@ -242,10 +212,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_filter_enable(_handle.Ptr, enable, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         /**
@@ -263,10 +230,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             bool res = obNative.ob_filter_is_enabled(_handle.Ptr, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return res;
         }
 
@@ -274,10 +238,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr ptr = obNative.ob_filter_get_name(_handle.Ptr, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return Marshal.PtrToStringAnsi(ptr);
         }
 
@@ -285,10 +246,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr ptr = obNative.ob_filter_get_config_schema(_handle.Ptr, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return Marshal.PtrToStringAnsi(ptr);
         }
 
@@ -307,10 +265,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_filter_update_config(_handle.Ptr, argc, argv, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         public List<FilterConfigSchemaItem> GetConfigSchemaList()
@@ -322,20 +277,14 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_filter_set_config_value(_handle.Ptr, configName, value, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         public double GetConfigValue(string configName)
         {
             IntPtr error = IntPtr.Zero;
             double value = obNative.ob_filter_get_config_value(_handle.Ptr, configName, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return value;
         }
 
@@ -343,10 +292,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_delete_filter(handle, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         public void Dispose()
@@ -368,10 +314,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_create_filter(name, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return new Filter(handle);
         }
 
@@ -393,10 +336,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_create_private_filter(name, activationKey, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return new Filter(handle);
         }
 
@@ -418,10 +358,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             string code = obNative.ob_filter_get_vendor_specific_code(name, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return code;
         }
     }
@@ -433,10 +370,7 @@ namespace Orbbec
             IntPtr error = IntPtr.Zero;
             //IntPtr handle = obNative.ob_create_pointcloud_filter(ref error);
             IntPtr handle = obNative.ob_create_filter("PointCloudFilter", ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             _handle = new NativeHandle(handle, Delete);
             Init();
         }
@@ -457,10 +391,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_pointcloud_filter_set_camera_param(_handle.Ptr, cameraParam, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         /**
@@ -496,10 +427,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_pointcloud_filter_set_frame_align_state(_handle.Ptr, state, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         /**
@@ -569,10 +497,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_create_filter("Align", ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             _handle = new NativeHandle(handle, Delete);
             Init();
 
@@ -596,10 +521,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_create_filter("FormatConverter", ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             _handle = new NativeHandle(handle, Delete);
         }
 
@@ -628,10 +550,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_create_filter("HDRMerge", ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             _handle = new NativeHandle(handle, Delete);
             Init();
         }
@@ -672,10 +591,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_create_filter("SequenceIdFilter", ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             _handle = new NativeHandle(handle, Delete);
             Init();
             InitSeqenceIdList();
@@ -732,10 +648,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_create_filter("DecimationFilter", ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             _handle = new NativeHandle(handle, Delete);
             Init();
         }
@@ -777,10 +690,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_create_filter("ThresholdFilter", ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             _handle = new NativeHandle(handle, Delete);
             Init();
         }
@@ -849,10 +759,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_create_private_filter("SpatialAdvancedFilter", activationKey, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             _handle = new NativeHandle(handle, Delete);
             Init();
         }
@@ -972,10 +879,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_create_private_filter("HoleFillingFilter", activationKey, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             _handle = new NativeHandle(handle, Delete);
             Init();
         }
@@ -999,10 +903,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_create_private_filter("NoiseRemovalFilter", activationKey, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             _handle = new NativeHandle(handle, Delete);
             Init();
         }
@@ -1074,10 +975,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_create_private_filter("TemporalFilter", activationKey, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             _handle = new NativeHandle(handle, Delete);
             Init();
         }
@@ -1146,10 +1044,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_create_private_filter("DisparityTransform", activationKey, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             _handle = new NativeHandle(handle, Delete);
             Init();
         }
@@ -1162,10 +1057,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_create_compression_filter(ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             _handle = new NativeHandle(handle, Delete);
         }
 
@@ -1186,10 +1078,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_compression_filter_set_compression_params(_handle.Ptr, mode, param, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
     }
 
@@ -1200,10 +1089,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_create_decompression_filter(ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             _handle = new NativeHandle(handle, Delete);
         }
     }

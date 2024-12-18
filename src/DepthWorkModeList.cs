@@ -26,10 +26,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             UInt32 count = obNative.ob_depth_work_mode_list_get_count(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return count;
         }
 
@@ -52,10 +49,7 @@ namespace Orbbec
             IntPtr error = IntPtr.Zero;
             DepthWorkMode workMode;
             obNative.ob_depth_work_mode_list_get_item(out workMode, _handle.Ptr, index, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return workMode;
         }
 
@@ -63,10 +57,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_delete_depth_work_mode_list(handle, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         public void Dispose()

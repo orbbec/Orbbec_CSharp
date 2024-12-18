@@ -27,10 +27,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             UInt32 count = obNative.ob_device_preset_list_get_count(_handle.Ptr, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return count;
         }
 
@@ -38,10 +35,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr ptr = obNative.ob_device_preset_list_get_name(_handle.Ptr, index, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return Marshal.PtrToStringAnsi(ptr);
         }
 
@@ -49,10 +43,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             bool result = obNative.ob_device_preset_list_has_preset(_handle.Ptr, presetName, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return result;
         }
 
@@ -60,10 +51,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_delete_preset_list(handle, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         public void Dispose()

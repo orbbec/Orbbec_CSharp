@@ -26,10 +26,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             UInt32 count = obNative.ob_camera_param_list_get_count(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return count;
         }
 
@@ -51,10 +48,7 @@ namespace Orbbec
             IntPtr error = IntPtr.Zero;
             CameraParam cameraParam;
             obNative.ob_camera_param_list_get_param(out cameraParam, _handle.Ptr, index, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return cameraParam;
         }
 
@@ -62,10 +56,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_delete_camera_param_list(handle, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         public void Dispose()

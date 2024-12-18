@@ -15,10 +15,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             UInt32 count = obNative.ob_filter_config_schema_list_get_count(_handle.Ptr, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return count;
         }
 
@@ -27,10 +24,7 @@ namespace Orbbec
             IntPtr error = IntPtr.Zero;
             FilterConfigSchemaItem item;
             obNative.ob_filter_config_schema_list_get_item(out item, _handle.Ptr, index, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return item;
         }
 
@@ -38,10 +32,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_delete_filter_config_schema_list(handle, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         public void Dispose()

@@ -19,10 +19,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_create_recorder(ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             _handle = new NativeHandle(handle, Delete);
         }
 
@@ -39,10 +36,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_create_recorder_with_device(device.GetNativeHandle().Ptr, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             _handle = new NativeHandle(handle, Delete);
         }
 
@@ -63,10 +57,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_recorder_start(_handle.Ptr, fileName, asycn, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         /**
@@ -80,10 +71,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_recorder_stop(_handle.Ptr, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         /**
@@ -101,20 +89,14 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_recorder_write_frame(_handle.Ptr, frame.GetNativeHandle().Ptr, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         internal void Delete(IntPtr handle)
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_delete_recorder(handle, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         public void Dispose()

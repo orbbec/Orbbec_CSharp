@@ -27,10 +27,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr ptr = obNative.ob_device_info_get_name(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return Marshal.PtrToStringAnsi(ptr);
         }
 
@@ -49,10 +46,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             int pid = obNative.ob_device_info_get_pid(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return "0x" + pid.ToString("X4");
         }
 
@@ -71,10 +65,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             int vid = obNative.ob_device_info_get_vid(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return vid;
         }
 
@@ -93,10 +84,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr ptr = obNative.ob_device_info_get_uid(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return Marshal.PtrToStringAnsi(ptr);
         }
 
@@ -115,10 +103,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr ptr = obNative.ob_device_info_get_serial_number(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return Marshal.PtrToStringAnsi(ptr);
         }
 
@@ -137,10 +122,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr ptr = obNative.ob_device_info_get_firmware_version(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return Marshal.PtrToStringAnsi(ptr);
         }
 
@@ -159,10 +141,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr ptr = obNative.ob_device_info_connection_type(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return Marshal.PtrToStringAnsi(ptr);
         }
 
@@ -170,10 +149,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr ptr = obNative.ob_device_info_get_ip_address(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return Marshal.PtrToStringAnsi(ptr);
         }
 
@@ -192,10 +168,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr ptr = obNative.ob_device_info_get_hardware_version(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return Marshal.PtrToStringAnsi(ptr);
         }
 
@@ -214,10 +187,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr ptr = obNative.ob_device_info_get_supported_min_sdk_version(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return Marshal.PtrToStringAnsi(ptr);
         }
 
@@ -236,10 +206,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr ptr = obNative.ob_device_info_get_asicName(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return Marshal.PtrToStringAnsi(ptr);
         }
 
@@ -258,10 +225,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             DeviceType deviceType = obNative.ob_device_info_get_device_type(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return deviceType;
         }
 
@@ -269,10 +233,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_delete_device_info(handle, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         public void Dispose()

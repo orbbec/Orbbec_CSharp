@@ -14,10 +14,7 @@ namespace Orbbec
             IntPtr error = IntPtr.Zero;
             bool result = obNative.ob_transformation_2d_to_2d(sourcePixel, depthValue, sourceIntrinsic, sourceDistortion,
                 targetIntrinsic, targetDistortion, extrinsicD2C, ref targetPixel, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return result;
         }
 
@@ -27,10 +24,7 @@ namespace Orbbec
             IntPtr error = IntPtr.Zero;
             bool result = obNative.ob_transformation_2d_to_3d(sourcePixel, depthValue, sourceIntrinsic, 
                 extrinsicD2C, ref targetPixel, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return result;
         }
 
@@ -38,10 +32,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             bool result = obNative.ob_transformation_3d_to_3d(sourcePixel, extrinsicD2C, ref targetPixel, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return result;
         }
 
@@ -51,10 +42,7 @@ namespace Orbbec
             IntPtr error = IntPtr.Zero;
             bool result = obNative.ob_transformation_3d_to_2d(sourcePixel, sourceIntrinsic, sourceDistortion,
                 extrinsicD2C, ref targetPixel, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return result;
         }
     }

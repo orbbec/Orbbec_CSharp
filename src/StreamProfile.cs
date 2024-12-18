@@ -42,10 +42,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_create_stream_profile(streamType, format, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return new StreamProfile(handle);
         }
 
@@ -53,10 +50,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_create_stream_profile_from_other_stream_profile(srcProfile.GetNativeHandle().Ptr, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return new StreamProfile(handle);
         }
 
@@ -64,10 +58,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_create_stream_profile_with_new_format(profile.GetNativeHandle().Ptr, format, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return new StreamProfile(handle);
         }
 
@@ -86,10 +77,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             Format format = obNative.ob_stream_profile_get_format(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return format;
         }
 
@@ -97,30 +85,21 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_stream_profile_set_format(_handle.Ptr, format, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         public void SetStreamType(StreamType streamType)
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_stream_profile_set_type(_handle.Ptr, streamType, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         public void SetExtrinsicTo(StreamProfile targetProfile, Extrinsic extrinsic)
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_stream_profile_set_extrinsic_to(_handle.Ptr, targetProfile.GetNativeHandle().Ptr, extrinsic, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         /**
@@ -138,10 +117,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             StreamType streamType = obNative.ob_stream_profile_get_type(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return streamType;
         }
 
@@ -150,10 +126,7 @@ namespace Orbbec
             IntPtr error = IntPtr.Zero;
             DisparityParam param;
             obNative.ob_disparity_based_stream_profile_get_disparity_param(out param, _handle.Ptr, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return param;
         }
 
@@ -161,10 +134,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_disparity_based_stream_profile_set_disparity_param(_handle.Ptr, param, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         public Extrinsic GetExtrinsicTo(StreamProfile target)
@@ -172,10 +142,7 @@ namespace Orbbec
             IntPtr error = IntPtr.Zero;
             Extrinsic extrinsic;
             obNative.ob_stream_profile_get_extrinsic_to(out extrinsic, _handle.Ptr, target.GetNativeHandle().Ptr, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return extrinsic;
         }
 
@@ -183,10 +150,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_delete_stream_profile(handle, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         public void Dispose()
@@ -205,10 +169,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_create_video_stream_profile(streamType, format, width, height, fps, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return new VideoStreamProfile(handle);
         }
 
@@ -227,10 +188,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             UInt32 fps = obNative.ob_video_stream_profile_get_fps(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return fps;
         }
 
@@ -249,10 +207,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             UInt32 width = obNative.ob_video_stream_profile_get_width(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return width;
         }
 
@@ -271,10 +226,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             UInt32 height = obNative.ob_video_stream_profile_get_height(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return height;
         }
 
@@ -282,30 +234,21 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_video_stream_profile_set_width(_handle.Ptr, width, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         public void SetHeight(UInt32 height)
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_video_stream_profile_set_height(_handle.Ptr, height, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         public void SetIntrinsic(CameraIntrinsic intrinsic)
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_video_stream_profile_set_intrinsic(_handle.Ptr, intrinsic, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         public CameraIntrinsic GetIntrinsic()
@@ -313,10 +256,7 @@ namespace Orbbec
             IntPtr error = IntPtr.Zero;
             CameraIntrinsic intrinsic;
             obNative.ob_video_stream_profile_get_intrinsic(out intrinsic, _handle.Ptr, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return intrinsic;
         }
 
@@ -324,10 +264,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_video_stream_profile_set_distortion(_handle.Ptr, distortion, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
 
         public CameraDistortion GetDistortion()
@@ -335,10 +272,7 @@ namespace Orbbec
             IntPtr error = IntPtr.Zero;
             CameraDistortion distortion;
             obNative.ob_video_stream_profile_get_distortion(out distortion, _handle.Ptr, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return distortion;
         }
     }
@@ -353,10 +287,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_create_accel_stream_profile(fullScaleRange, sampleRate, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return new AccelStreamProfile(handle);
         }
 
@@ -375,10 +306,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             AccelFullScaleRange accelFullScaleRange = obNative.ob_accel_stream_profile_get_full_scale_range(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return accelFullScaleRange;
         } 
 
@@ -397,10 +325,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             AccelSampleRate accelSampleRate = obNative.ob_accel_stream_profile_get_sample_rate(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return accelSampleRate;
         }
 
@@ -408,10 +333,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_accel_stream_profile_set_intrinsic(_handle.Ptr, intrinsic, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
     }
 
@@ -425,10 +347,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_create_gyro_stream_profile(fullScaleRange, sampleRate, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return new GyroStreamProfile(handle);
         }
 
@@ -447,10 +366,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             GyroFullScaleRange gyroFullScaleRange = obNative.ob_gyro_stream_profile_get_full_scale_range(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return gyroFullScaleRange;
         } 
 
@@ -469,10 +385,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             GyroSampleRate gyroSampleRate = obNative.ob_gyro_stream_profile_get_sample_rate(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
             return gyroSampleRate;
         }
 
@@ -480,10 +393,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_gyro_stream_set_intrinsic(_handle.Ptr, intrinsic, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            NativeException.HandleError(error);
         }
     }
 }
