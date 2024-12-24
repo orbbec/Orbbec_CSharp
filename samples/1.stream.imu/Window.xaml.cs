@@ -1,20 +1,18 @@
 using System;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
 namespace Orbbec
 {
-    /// <summary>
-    /// Interaction logic for Window.xaml
-    /// </summary>
     public partial class ImuWindow : Window
     {
-        private readonly FrameCallback frameCallback;
         private Sensor accelSensor;
         private Sensor gyroSensor;
         private DispatcherTimer timer = new DispatcherTimer();
-        // accel info and gyro info
+
+        // Accel and Gyro data
         private AccelValue accelValue;
         private GyroValue gyroValue;
         private ulong accelTimestamp;
@@ -25,99 +23,128 @@ namespace Orbbec
         public ImuWindow()
         {
             InitializeComponent();
+            timer.Interval = TimeSpan.FromMilliseconds(16);
+            timer.Tick += Timer_Tick;
+            timer.Start();
 
+            // Start the pipeline in an asynchronous method
+            StartPipelineAsync();
+        }
+
+        private async void StartPipelineAsync()
+        {
             try
             {
-                Pipeline pipeline = new Pipeline();
-
-                Device device = pipeline.GetDevice();
-
-                frameCallback = OnFrame;
-
-                accelSensor = device.GetSensor(SensorType.OB_SENSOR_ACCEL);
-                using (StreamProfileList accelProfileList = accelSensor.GetStreamProfileList()) 
+                using (Pipeline pipeline = new Pipeline())
                 {
-                    using (StreamProfile accelProfile = accelProfileList.GetProfile(0)) 
+                    using (Config config = new Config())
                     {
-                        accelSensor.Start(accelProfile, frameCallback);
+                        config.EnableAccelStream();
+                        config.EnableGyroStream();
+                        config.SetFrameAggregateOutputMode(FrameAggregateOutputMode.OB_FRAME_AGGREGATE_OUTPUT_ALL_TYPE_FRAME_REQUIRE);
+                        pipeline.Start(config);
+
+                        while (true) // Continuous reading
+                        {
+                            var frames = await Task.Run(() => pipeline.WaitForFrames(100));
+                            if (frames != null)
+                            {
+                                // Process specific frame types
+                                ProcessFrame(frames.GetFrame(FrameType.OB_FRAME_ACCEL));
+                                ProcessFrame(frames.GetFrame(FrameType.OB_FRAME_GYRO));
+                            }
+                        }
                     }
                 }
-
-                gyroSensor = device.GetSensor(SensorType.OB_SENSOR_GYRO);
-                using (StreamProfileList gyroProfileList = gyroSensor.GetStreamProfileList()) 
-                {
-                    using (StreamProfile gyroProfile = gyroProfileList.GetProfile(0))
-                    {
-                        gyroSensor.Start(gyroProfile, frameCallback);
-                    }
-                }
-
-                timer.Interval = TimeSpan.FromMilliseconds(16);
-                timer.Tick += Timer_Tick;
-                timer.Start();
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message);
-                Stop();
-                Application.Current.Shutdown();
+                // Show error on the UI thread
+                Dispatcher.Invoke(() =>
+                {
+                    MessageBox.Show(e.Message);
+                    Stop();
+                    Application.Current.Shutdown();
+                });
             }
         }
 
-        private void OnFrame(Frame frame)
+        private void ProcessFrame(Frame frame)
         {
+            if (frame == null) return;
+
             if (frame.GetFrameType() == FrameType.OB_FRAME_ACCEL)
             {
                 var accelFrame = frame.As<AccelFrame>();
-                if (accelFrame != null)
-                {
-                    accelValue = accelFrame.GetAccelValue();
-                    accelTimestamp = accelFrame.GetTimeStampUs();
-                    accelTemperature = accelFrame.GetTemperature();
-                }
+                ProcessAccelFrame(accelFrame);
             }
-            if (frame.GetFrameType() == FrameType.OB_FRAME_GYRO)
+            else if (frame.GetFrameType() == FrameType.OB_FRAME_GYRO)
             {
                 var gyroFrame = frame.As<GyroFrame>();
-                if (gyroFrame != null)
-                {
-                    gyroValue = gyroFrame.GetGyroValue();
-                    gyroTimestamp = gyroFrame.GetTimeStampUs();
-                    gyroTemperature = gyroFrame.GetTemperature();
-                }
+                ProcessGyroFrame(gyroFrame);
             }
-            frame.Dispose();
+            frame.Dispose(); // Dispose the frame after processing
+        }
+
+        private void ProcessAccelFrame(AccelFrame accelFrame)
+        {
+            if (accelFrame != null)
+            {
+                accelValue = accelFrame.GetAccelValue();
+                accelTimestamp = accelFrame.GetTimeStampUs();
+                accelTemperature = accelFrame.GetTemperature();
+
+                UpdateAccelUI();
+            }
+        }
+
+        private void ProcessGyroFrame(GyroFrame gyroFrame)
+        {
+            if (gyroFrame != null)
+            {
+                gyroValue = gyroFrame.GetGyroValue();
+                gyroTimestamp = gyroFrame.GetTimeStampUs();
+                gyroTemperature = gyroFrame.GetTemperature();
+
+                UpdateGyroUI();
+            }
+        }
+
+        private void UpdateAccelUI()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                tbAccel.Text = string.Format("Accel tsp:{0}\nAccelTemperature:{1}\nAccel.x:{2}\nAccel.y:{3}\nAccel.z:{4}",
+                    accelTimestamp, accelTemperature.ToString("F2"),
+                    accelValue.x, accelValue.y, accelValue.z);
+            });
+        }
+
+        private void UpdateGyroUI()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                tbGyro.Text = string.Format("Gyro tsp:{0}\nGyroTemperature:{1}\nGyro.x:{2}\nGyro.y:{3}\nGyro.z:{4}",
+                    gyroTimestamp, gyroTemperature.ToString("F2"),
+                    gyroValue.x, gyroValue.y, gyroValue.z);
+            });
         }
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            tbAccel.Text = string.Format("Accel tsp:{0}\nAccelTemperature:{1}\nAccel.x:{2}\nAccel.y:{3}\nAccel.z:{4}",
-                accelTimestamp, accelTemperature.ToString("F2"),
-                accelValue.x, accelValue.y, accelValue.z);
-
-            tbGyro.Text = string.Format("Gyro tsp:{0}\nGyroTemperature:{1}\nGyro.x:{2}\nGyro.y:{3}\nGyro.z:{4}",
-                gyroTimestamp, gyroTemperature.ToString("F2"),
-                gyroValue.x, gyroValue.y, gyroValue.z);
+            // This can be left empty since UI updates are handled in OnFrame.
         }
 
         private void Stop()
         {
-            if (timer != null)
-            {
-                timer.Stop();
-                timer.Tick -= Timer_Tick;
-                timer = null;
-            }
-            if (accelSensor != null)
-            {
-                accelSensor.Stop();
-                accelSensor.Dispose();
-            }
-            if (gyroSensor != null)
-            {
-                gyroSensor.Stop();
-                gyroSensor.Dispose();
-            }
+            timer.Stop();
+            timer.Tick -= Timer_Tick;
+
+            // Dispose sensors if they were created
+            accelSensor?.Stop();
+            accelSensor?.Dispose();
+            gyroSensor?.Stop();
+            gyroSensor?.Dispose();
         }
 
         private void Control_Closing(object sender, CancelEventArgs e)

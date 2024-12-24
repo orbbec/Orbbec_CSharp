@@ -10,18 +10,25 @@ namespace Orbbec
     public sealed class NativeHandle : IDisposable
     {
         private readonly ReleaseAction _action;
+        private int _referenceCount;
+        private bool _disposed;
 
         public IntPtr Ptr { get; private set; }
-        public int ReferenceCount { get; private set; }
-        public bool IsValid { get { return Ptr != IntPtr.Zero; } }
+        public bool IsValid => Ptr != IntPtr.Zero;
 
         public NativeHandle(IntPtr ptr, ReleaseAction releaseAction)
         {
             ThrowIfNull(ptr);
 
             Ptr = ptr;
-            ReferenceCount = 1;
+            _referenceCount = 1;
             _action = releaseAction;
+            _disposed = false;
+        }
+
+        public int GetReferenceCount()
+        {
+            return _referenceCount;
         }
 
         private void ThrowIfNull(IntPtr ptr)
@@ -42,32 +49,55 @@ namespace Orbbec
 
         public void Retain()
         {
-            ++ReferenceCount;
+            if (_disposed)
+            {
+                throw new ObjectDisposedException(nameof(NativeHandle));
+            }
+
+            System.Threading.Interlocked.Increment(ref _referenceCount);
         }
 
         public void Release()
         {
-            if (--ReferenceCount > 0)
+            if (_disposed)
+            {
+                throw new ObjectDisposedException(nameof(NativeHandle));
+            }
+
+
+            int newCount = System.Threading.Interlocked.Decrement(ref _referenceCount);
+            if (newCount > 0)
                 return;
 
             ThrowIfInvalid();
-            if (_action != null)
-            {
-                _action(Ptr);
-            }
-
-            Ptr = IntPtr.Zero;
+            _action?.Invoke(Ptr);
+            Ptr = IntPtr.Zero; 
+            _disposed = true; 
         }
 
         public void Dispose()
         {
-            Release();
+            Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
+            {
+                // Dispose managed resources if any
+            }
+
+            Release();
+            _disposed = true; 
         }
 
         ~NativeHandle()
         {
-            Release();
+            Dispose(false);
         }
     }
 }

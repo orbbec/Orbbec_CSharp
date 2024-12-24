@@ -1,0 +1,24 @@
+<Window x:Class="Orbbec.HDRMergeWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Orbbec"
+        mc:Ignorable="d" WindowStartupLocation="CenterOwner"
+        Closing="Control_Closing"
+        Title="HDRMerge" Height="700" Width="1200" x:Name="control">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,10">
+            <TextBlock Text="Depth Stream" HorizontalAlignment="Center" FontSize="16" />
+            <Image x:Name="imgDepth" />
+        </StackPanel>
+        <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,10">
+            <TextBlock Text="HDRMerge Depth Stream" HorizontalAlignment="Center" FontSize="16" />
+            <Image x:Name="imgDepthPP" />
+        </StackPanel>
+    </Grid>
+</Window>
