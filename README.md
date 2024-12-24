@@ -14,6 +14,9 @@ The v2-main branch, C# Wrapper is based the open source version of [Orbbec SDK v
 | Gemini 335L        | 1.2.20                    |
 | Gemini 336        | 1.2.20                      |
 | Gemini 336L        | 1.2.20                    |
+| Femto Bolt        | 1.0.6/1.0.9                  |
+| Femto Mega        | 1.1.7/1.2.7                  |
+
 
 # Compile and run sample
 Here, it is assumed that you have installed Cmake correctly. If you have not installed Cmake, you can refer to the Cmake official website for installation.
