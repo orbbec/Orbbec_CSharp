@@ -264,7 +264,7 @@ namespace Orbbec
             Extrinsic extrinsicD2C = depthProfile.GetExtrinsicTo(colorProfile);
 
             // Get the intrinsic and distortion parameters for the color and depth streams
-            VideoStreamProfile depthVideoStreamProfile = colorProfile.As<VideoStreamProfile>();
+            VideoStreamProfile depthVideoStreamProfile = depthProfile.As<VideoStreamProfile>();
             CameraIntrinsic depthIntrinsic = depthVideoStreamProfile.GetIntrinsic();
             CameraDistortion depthDistortion = depthVideoStreamProfile.GetDistortion();
             // Access the depth data from the frame
