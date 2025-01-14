@@ -7,9 +7,8 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using System.IO;
-using System.Runtime.InteropServices;
-using SystemDrawing = System.Drawing;
+using System.Collections.Generic;
+using Common;
 
 namespace Orbbec
 {
@@ -19,6 +18,8 @@ namespace Orbbec
     public partial class MultiStreamWindow : Window
     {
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
+        private Task processingTask;
+        private Dictionary<string, Action<VideoFrame>> imageUpdateActions = new Dictionary<string, Action<VideoFrame>>();
 
         private static Action<VideoFrame> UpdateImage(Image img, Format format)
         {
@@ -33,115 +34,26 @@ namespace Orbbec
                 if (frame.GetFrameType() == FrameType.OB_FRAME_COLOR && 
                     frame.GetFormat() == Format.OB_FORMAT_MJPG)
                 {
-                    data = ConvertMJPGToRGB(data);
+                    data = ImageConverter.ConvertMJPGToRGBData(data);
                 }
                 else if (frame.GetFrameType() == FrameType.OB_FRAME_DEPTH)
                 {
-                    data = ConvertDepthToRGBData(data);
+                    data = ImageConverter.ConvertDepthToRGBData(data);
                 }
                 else if (frame.GetFrameType() == FrameType.OB_FRAME_IR ||
                     frame.GetFrameType() == FrameType.OB_FRAME_IR_LEFT ||
                     frame.GetFrameType() == FrameType.OB_FRAME_IR_RIGHT)
                 {
-                    data = ConvertIRToRGBData(data, format);
+                    data = ImageConverter.ConvertIRToRGBData(data, format);
                 }
                 var rect = new Int32Rect(0, 0, width, height);
                 wbmp.WritePixels(rect, data, stride, 0);
             });
         }
 
-        private static byte[] ConvertMJPGToRGB(byte[] mjpgData)
-        {
-            using (var ms = new MemoryStream(mjpgData))
-            {
-                using (var jpegImage = new SystemDrawing.Bitmap(ms))
-                {
-                    SystemDrawing.Rectangle rect = new SystemDrawing.Rectangle(0, 0, jpegImage.Width, jpegImage.Height);
-                    SystemDrawing.Imaging.BitmapData bmpData = 
-                        jpegImage.LockBits(rect, SystemDrawing.Imaging.ImageLockMode.ReadOnly, SystemDrawing.Imaging.PixelFormat.Format24bppRgb);
-
-                    IntPtr ptr = bmpData.Scan0;
-                    int size = Math.Abs(bmpData.Stride) * jpegImage.Height;
-                    byte[] rgbData = new byte[size];
-
-                    Marshal.Copy(ptr, rgbData, 0, size);
-
-                    jpegImage.UnlockBits(bmpData);
-
-                    // Adjust the order of BGR to RGB
-                    for (int i = 0; i < rgbData.Length; i += 3)
-                    {
-                        // BGR -> RGB: Exchange Blue and Red
-                        byte temp = rgbData[i];      // Blue
-                        rgbData[i] = rgbData[i + 2]; // Red
-                        rgbData[i + 2] = temp;       // Exchange Blue and Red
-                    }
-
-                    return rgbData;
-                }
-            }
-        }
-
-        private static byte[] ConvertDepthToRGBData(byte[] depthData)
-        {
-            byte[] colorData = new byte[depthData.Length / 2 * 3];
-            for (int i = 0; i < depthData.Length; i += 2)
-            {
-                ushort depthValue = (ushort)((depthData[i + 1] << 8) | depthData[i]);
-                float depth = (float)depthValue / 1000;
-                byte depthByte = (byte)(depth * 255);
-                int index = i / 2 * 3;
-                colorData[index] = depthByte; // Red
-                colorData[index + 1] = depthByte; // Green
-                colorData[index + 2] = depthByte; // Blue
-            }
-            return colorData;
-        }
-
-        private static byte[] ConvertIRToRGBData(byte[] irData, Format format)
-        {
-            byte[] colorData = null;
-            switch (format)
-            {
-                case Format.OB_FORMAT_Y16:
-                    colorData = new byte[irData.Length / 2 * 3];
-                    for (int i = 0; i < irData.Length; i += 2)
-                    {
-                        ushort irValue = (ushort)((irData[i + 1] << 8) | irData[i]);
-                        byte irByte = (byte)(irValue >> 8); // Scale down to 8 bits
-
-                        int index = i / 2 * 3;
-                        colorData[index] = irByte; // Red
-                        colorData[index + 1] = irByte; // Green
-                        colorData[index + 2] = irByte; // Blue
-                    }
-                    break;
-                case Format.OB_FORMAT_Y8:
-                    colorData = new byte[irData.Length * 3];
-                    for (int i = 0; i < irData.Length; i++)
-                    {
-                        byte irByte = irData[i];
-
-                        int index = i * 3;
-                        colorData[index] = irByte;
-                        colorData[index + 1] = irByte;
-                        colorData[index + 2] = irByte;
-                    }
-                    break;
-            }
-
-            return colorData;
-        }
-
         public MultiStreamWindow()
         {
             InitializeComponent();
-
-            Action<VideoFrame> updateColor = null;
-            Action<VideoFrame> updateDepth = null;
-            Action<VideoFrame> updateIr = null;
-            Action<VideoFrame> updateIrLeft = null;
-            Action<VideoFrame> updateIrRight = null;
 
             try
             {
@@ -183,23 +95,23 @@ namespace Orbbec
 
                             if (colorFrame != null)
                             {
-                                updateColor = UpdateFrame(imgColor, updateColor, colorFrame);
+                                UpdateFrame("color", imgColor, colorFrame);
                             }
                             if (depthFrame != null)
                             {
-                                updateDepth = UpdateFrame(imgDepth, updateDepth, depthFrame);
+                                UpdateFrame("depth", imgDepth, depthFrame);
                             }
                             if (irFrame != null)
                             {
-                                updateIr = UpdateFrame(imgIr, updateIr, irFrame);
+                                UpdateFrame("ir", imgIr, irFrame);
                             }
                             if (irLeftFrame != null)
                             {
-                                updateIrLeft = UpdateFrame(imgIrLeft, updateIrLeft, irLeftFrame);
+                                UpdateFrame("irLeft", imgIrLeft, irLeftFrame);
                             }
                             if (irRightFrame != null)
                             {
-                                updateIrRight = UpdateFrame(imgIrRight, updateIrRight, irRightFrame);
+                                UpdateFrame("irRight", imgIrRight, irRightFrame);
                             }
                         }
                     }
@@ -231,7 +143,7 @@ namespace Orbbec
                                 var accelValue = accelFrame.GetAccelValue();
                                 var accelTimestamp = accelFrame.GetTimeStampUs();
                                 var accelTemperature = accelFrame.GetTemperature();
-                                Dispatcher.Invoke(() =>
+                                Dispatcher.InvokeAsync(() =>
                                 {
                                     tbAccel.Text = string.Format("Accel tsp:{0}\nAccelTemperature:{1}\nAccel.x:{2}\nAccel.y:{3}\nAccel.z:{4}",
                                         accelTimestamp, accelTemperature.ToString("F2"),
@@ -244,7 +156,7 @@ namespace Orbbec
                                 var gyroValue = gyroFrame.GetGyroValue();
                                 var gyroTimestamp = gyroFrame.GetTimeStampUs();
                                 var gyroTemperature = gyroFrame.GetTemperature();
-                                Dispatcher.Invoke(() =>
+                                Dispatcher.InvokeAsync(() =>
                                 {
                                     tbGyro.Text = string.Format("Gyro tsp:{0}\nGyroTemperature:{1}\nGyro.x:{2}\nGyro.y:{3}\nGyro.z:{4}",
                                         gyroTimestamp, gyroTemperature.ToString("F2"),
@@ -253,7 +165,7 @@ namespace Orbbec
                             }
                         }
                     }
-                }, tokenSource.Token);
+                }, tokenSource.Token).ContinueWith(t => imuPipeline.Stop());
             }
             catch (Exception e)
             {
@@ -262,9 +174,9 @@ namespace Orbbec
             }
         }
 
-        private Action<VideoFrame> UpdateFrame(Image image, Action<VideoFrame> updateAction, VideoFrame frame)
+        private void UpdateFrame(string type, Image image, VideoFrame frame)
         {
-            Dispatcher.Invoke(() =>
+            Dispatcher.InvokeAsync(() => 
             {
                 if (!(image.Source is WriteableBitmap writeableBitmap))
                 {
@@ -281,16 +193,23 @@ namespace Orbbec
                         irRightGrid.Visibility = Visibility.Visible;
                     }
                     image.Source = new WriteableBitmap((int)frame.GetWidth(), (int)frame.GetHeight(), 96d, 96d, PixelFormats.Rgb24, null);
-                    updateAction = UpdateImage(image, frame.GetFormat());
+
+                    imageUpdateActions[type] = UpdateImage(image, frame.GetFormat());
                 }
-                updateAction?.Invoke(frame);
+                if (imageUpdateActions.TryGetValue(type, out var action))
+                {
+                    action?.Invoke(frame);
+                }
             }, DispatcherPriority.Render);
-            return updateAction;
         }
 
-        private void Control_Closing(object sender, CancelEventArgs e)
+        private async void Control_Closing(object sender, CancelEventArgs e)
         {
             tokenSource.Cancel();
+            if (processingTask != null)
+            {
+                await processingTask;
+            }
         }
     }
 }

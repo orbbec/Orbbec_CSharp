@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using Common;
 
 namespace Orbbec
 {
@@ -16,6 +17,7 @@ namespace Orbbec
     public partial class SyncAlignWindow : Window
     {
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
+        private Task processingTask;
         private Pipeline pipeline;
 
         private static Action<VideoFrame> UpdateImage(Image img)
@@ -28,29 +30,17 @@ namespace Orbbec
                 int stride = wbmp.BackBufferStride;
                 byte[] data = new byte[frame.GetDataSize()];
                 frame.CopyData(ref data);
-                if (frame.GetFrameType() == FrameType.OB_FRAME_DEPTH)
+                if (frame.GetFormat() == Format.OB_FORMAT_MJPG)
                 {
-                    data = ConvertDepthToRGBData(data);
+                    data = ImageConverter.ConvertMJPGToRGBData(data);
+                }
+                else if (frame.GetFrameType() == FrameType.OB_FRAME_DEPTH)
+                {
+                    data = ImageConverter.ConvertDepthToRGBData(data);
                 }
                 var rect = new Int32Rect(0, 0, width, height);
                 wbmp.WritePixels(rect, data, stride, 0);
             });
-        }
-
-        private static byte[] ConvertDepthToRGBData(byte[] depthData)
-        {
-            byte[] colorData = new byte[depthData.Length / 2 * 3];
-            for (int i = 0; i < depthData.Length; i += 2)
-            {
-                ushort depthValue = (ushort)((depthData[i + 1] << 8) | depthData[i]);
-                float depth = (float)depthValue / 1000;
-                byte depthByte = (byte)(depth * 255);
-                int index = i / 2 * 3;
-                colorData[index] = depthByte; // Red
-                colorData[index + 1] = depthByte; // Green
-                colorData[index + 2] = depthByte; // Blue
-            }
-            return colorData;
         }
 
         public SyncAlignWindow()
@@ -78,18 +68,19 @@ namespace Orbbec
                 AlignFilter color2depthAlign = new AlignFilter(StreamType.OB_STREAM_DEPTH);
 
                 syncCheckBox.IsChecked = true;
-                hwAlign.IsChecked = true;
+                d2cAlign.IsChecked = true;
 
                 depth2colorAlign.SetCallback(frame =>
                 {
-                    UpdateImage(frame, ref updateColor, ref updateDepth);
+                    RenderImage(frame, ref updateColor, ref updateDepth);
                 });
                 color2depthAlign.SetCallback(frame =>
                 {
-                    UpdateImage(frame, ref updateColor, ref updateDepth);
+                    RenderImage(frame, ref updateColor, ref updateDepth);
                 });
 
-                Task.Factory.StartNew(() =>
+                bool isC2DAlignChecked = false;
+                processingTask = Task.Factory.StartNew(() =>
                 {
                     while (!tokenSource.Token.IsCancellationRequested)
                     {
@@ -97,13 +88,12 @@ namespace Orbbec
                         {
                             if (frames == null) continue;
 
-                            bool isSwAlignChecked = false;
                             Dispatcher.Invoke(() =>
                             {
-                                isSwAlignChecked = swAlign.IsChecked == true;
+                                isC2DAlignChecked = c2dAlign.IsChecked == true;
                             });
 
-                            Filter alignFilter = isSwAlignChecked ? color2depthAlign : depth2colorAlign;
+                            Filter alignFilter = isC2DAlignChecked ? color2depthAlign : depth2colorAlign;
                             alignFilter.PushFrame(frames);
                         }
                     }
@@ -144,13 +134,12 @@ namespace Orbbec
             return updateAction;
         }
 
-        private void UpdateImage(Frame frame, ref Action<VideoFrame> updateColor, ref Action<VideoFrame> updateDepth)
+        private void RenderImage(Frame frame, ref Action<VideoFrame> updateColor, ref Action<VideoFrame> updateDepth)
         {
             using (var frames = frame.As<Frameset>())
             {
                 var colorFrame = frames?.GetColorFrame();
                 var depthFrame = frames?.GetDepthFrame();
-
                 if (colorFrame != null)
                 {
                     updateColor = UpdateFrame(imgColor, updateColor, colorFrame);
@@ -162,9 +151,17 @@ namespace Orbbec
             }
         }
 
-        private void Control_Closing(object sender, CancelEventArgs e)
+        private async void Control_Closing(object sender, CancelEventArgs e)
         {
             tokenSource.Cancel();
+            if (pipeline != null)
+            {
+                pipeline.Stop();
+            }
+            if (processingTask != null)
+            {
+                await processingTask;
+            }
         }
     }
 }

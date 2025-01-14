@@ -8,6 +8,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using Common;
 
 namespace Orbbec
 {
@@ -17,6 +18,7 @@ namespace Orbbec
     public partial class HDRWindow : Window
     {
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
+        private Task processingTask;
         private Device device;
         private HdrConfig hdrConfig;
 
@@ -52,68 +54,17 @@ namespace Orbbec
                 frame.CopyData(ref data);
                 if (frame.GetFrameType() == FrameType.OB_FRAME_DEPTH)
                 {
-                    data = ConvertDepthToRGBData(data);
+                    data = ImageConverter.ConvertDepthToRGBData(data);
                 }
                 else if (frame.GetFrameType() == FrameType.OB_FRAME_IR ||
                     frame.GetFrameType() == FrameType.OB_FRAME_IR_LEFT ||
                     frame.GetFrameType() == FrameType.OB_FRAME_IR_RIGHT)
                 {
-                    data = ConvertIRToRGBData(data, format);
+                    data = ImageConverter.ConvertIRToRGBData(data, format);
                 }
                 var rect = new Int32Rect(0, 0, width, height);
                 wbmp.WritePixels(rect, data, stride, 0);
             });
-        }
-
-        private static byte[] ConvertDepthToRGBData(byte[] depthData)
-        {
-            byte[] colorData = new byte[depthData.Length / 2 * 3];
-            for (int i = 0; i < depthData.Length; i += 2)
-            {
-                ushort depthValue = (ushort)((depthData[i + 1] << 8) | depthData[i]);
-                float depth = (float)depthValue / 1000;
-                byte depthByte = (byte)(depth * 255);
-                int index = i / 2 * 3;
-                colorData[index] = depthByte; // Red
-                colorData[index + 1] = depthByte; // Green
-                colorData[index + 2] = depthByte; // Blue
-            }
-            return colorData;
-        }
-
-        private static byte[] ConvertIRToRGBData(byte[] irData, Format format)
-        {
-            byte[] colorData = null;
-            switch (format)
-            {
-                case Format.OB_FORMAT_Y16:
-                    colorData = new byte[irData.Length / 2 * 3];
-                    for (int i = 0; i < irData.Length; i += 2)
-                    {
-                        ushort irValue = (ushort)((irData[i + 1] << 8) | irData[i]);
-                        byte irByte = (byte)(irValue >> 8); // Scale down to 8 bits
-
-                        int index = i / 2 * 3;
-                        colorData[index] = irByte; // Red
-                        colorData[index + 1] = irByte; // Green
-                        colorData[index + 2] = irByte; // Blue
-                    }
-                    break;
-                case Format.OB_FORMAT_Y8:
-                    colorData = new byte[irData.Length * 3];
-                    for (int i = 0; i < irData.Length; i++)
-                    {
-                        byte irByte = irData[i];
-
-                        int index = i * 3;
-                        colorData[index] = irByte;
-                        colorData[index + 1] = irByte;
-                        colorData[index + 2] = irByte;
-                    }
-                    break;
-            }
-
-            return colorData;
         }
 
         public HDRWindow()
@@ -139,7 +90,9 @@ namespace Orbbec
 
                 if (!device.IsPropertySupported(PropertyId.OB_STRUCT_DEPTH_HDR_CONFIG, PermissionType.OB_PERMISSION_READ_WRITE))
                 {
-                    Console.WriteLine("Current default device does not support HDR merge");
+                    pipeline.Stop();
+                    MessageBox.Show("Current default device does not support HDR merge!", "´íÎó", MessageBoxButton.OK, MessageBoxImage.Error);
+                    Environment.Exit(0);
                     return;
                 }
 
@@ -170,7 +123,7 @@ namespace Orbbec
                     out updateDepth2, out updateIrLeft2, out updateIrRight2,
                     out updateHDR);
 
-                Task.Factory.StartNew(() =>
+                processingTask = Task.Factory.StartNew(() =>
                 {
                     while (!tokenSource.Token.IsCancellationRequested)
                     {
@@ -185,15 +138,15 @@ namespace Orbbec
                             int groupId = (int)depthFrame.GetMetadataValue(FrameMetadataType.OB_FRAME_METADATA_TYPE_HDR_SEQUENCE_INDEX);
                             if (groupId == 0)
                             {
-                                Dispatcher.Invoke(DispatcherPriority.Render, updateDepth1, depthFrame);
-                                Dispatcher.Invoke(DispatcherPriority.Render, updateIrLeft1, irLeftFrame);
-                                Dispatcher.Invoke(DispatcherPriority.Render, updateIrRight1, irRightFrame);
+                                Dispatcher.InvokeAsync(() => updateDepth1(depthFrame), DispatcherPriority.Render);
+                                Dispatcher.InvokeAsync(() => updateIrLeft1(irLeftFrame), DispatcherPriority.Render);
+                                Dispatcher.InvokeAsync(() => updateIrRight1(irRightFrame), DispatcherPriority.Render);
                             }
                             else if (groupId == 1)
                             {
-                                Dispatcher.Invoke(DispatcherPriority.Render, updateDepth2, depthFrame);
-                                Dispatcher.Invoke(DispatcherPriority.Render, updateIrLeft2, irLeftFrame);
-                                Dispatcher.Invoke(DispatcherPriority.Render, updateIrRight2, irRightFrame);
+                                Dispatcher.InvokeAsync(() => updateDepth2(depthFrame), DispatcherPriority.Render);
+                                Dispatcher.InvokeAsync(() => updateIrLeft2(irLeftFrame), DispatcherPriority.Render);
+                                Dispatcher.InvokeAsync(() => updateIrRight2(irRightFrame), DispatcherPriority.Render);
                             }
 
                             try
@@ -204,7 +157,7 @@ namespace Orbbec
                                 var resultFrameSet = result.As<Frameset>();
                                 var resultDepthFrame = resultFrameSet.GetFrame(FrameType.OB_FRAME_DEPTH).As<DepthFrame>();
 
-                                Dispatcher.Invoke(DispatcherPriority.Render, updateHDR, resultDepthFrame);
+                                Dispatcher.InvokeAsync(() => updateHDR(resultDepthFrame), DispatcherPriority.Render);
                             }
                             catch (Exception e)
                             {
@@ -212,7 +165,7 @@ namespace Orbbec
                             }
                         }
                     }
-                }, tokenSource.Token);
+                }, tokenSource.Token).ContinueWith(t => pipeline.Stop());
             }
             catch (Exception e)
             {
@@ -272,11 +225,14 @@ namespace Orbbec
             }
         }
 
-        private void Control_Closing(object sender, CancelEventArgs e)
+        private async void Control_Closing(object sender, CancelEventArgs e)
         {
             tokenSource.Cancel();
-
             CleanupDevice();
+            if (processingTask != null)
+            {
+                await processingTask;
+            }
         }
     }
 }

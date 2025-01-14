@@ -8,9 +8,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
-using System.Runtime.InteropServices;
-using SystemDrawing = System.Drawing;
+using Common;
 
 namespace Orbbec
 {
@@ -25,6 +23,8 @@ namespace Orbbec
         private Dictionary<string, Image> deviceDepthImages;
         private Dictionary<string, Action<VideoFrame>> updateColors;
         private Dictionary<string, Action<VideoFrame>> updateDepths;
+        Dictionary<string, Pipeline> pipes;
+        private Task processingTask;
 
         private static Action<VideoFrame> UpdateImage(Image img)
         {
@@ -39,61 +39,15 @@ namespace Orbbec
                 if (frame.GetFrameType() == FrameType.OB_FRAME_COLOR &&
                     frame.GetFormat() == Format.OB_FORMAT_MJPG)
                 {
-                    data = ConvertMJPGToRGB(data);
+                    data = ImageConverter.ConvertMJPGToRGBData(data);
                 }
                 else if(frame.GetFrameType() == FrameType.OB_FRAME_DEPTH)
                 {
-                    data = ConvertDepthToRGBData(data);
+                    data = ImageConverter.ConvertDepthToRGBData(data);
                 }
                 var rect = new Int32Rect(0, 0, width, height);
                 wbmp.WritePixels(rect, data, stride, 0);
             });
-        }
-
-        private static byte[] ConvertMJPGToRGB(byte[] mjpgData)
-        {
-            using (var ms = new MemoryStream(mjpgData))
-            {
-                using (var jpegImage = new SystemDrawing.Bitmap(ms))
-                {
-                    SystemDrawing.Rectangle rect = new SystemDrawing.Rectangle(0, 0, jpegImage.Width, jpegImage.Height);
-                    SystemDrawing.Imaging.BitmapData bmpData =
-                        jpegImage.LockBits(rect, SystemDrawing.Imaging.ImageLockMode.ReadOnly, SystemDrawing.Imaging.PixelFormat.Format24bppRgb);
-
-                    IntPtr ptr = bmpData.Scan0;
-                    int size = Math.Abs(bmpData.Stride) * jpegImage.Height;
-                    byte[] rgbData = new byte[size];
-
-                    Marshal.Copy(ptr, rgbData, 0, size);
-
-                    jpegImage.UnlockBits(bmpData);
-
-                    for (int i = 0; i < rgbData.Length; i += 3)
-                    {
-                        byte temp = rgbData[i];
-                        rgbData[i] = rgbData[i + 2];
-                        rgbData[i + 2] = temp;
-                    }
-
-                    return rgbData;
-                }
-            }
-        }
-
-        private static byte[] ConvertDepthToRGBData(byte[] depthData)
-        {
-            byte[] colorData = new byte[depthData.Length / 2 * 3];
-            for (int i = 0; i < depthData.Length; i += 2)
-            {
-                ushort depthValue = (ushort)((depthData[i + 1] << 8) | depthData[i]);
-                float depth = (float)depthValue / 1000;
-                byte depthByte = (byte)(depth * 255);
-                int index = i / 2 * 3;
-                colorData[index] = depthByte; // Red
-                colorData[index + 1] = depthByte; // Green
-                colorData[index + 2] = depthByte; // Blue
-            }
-            return colorData;
         }
 
         public MultiDevicesWindow()
@@ -108,13 +62,14 @@ namespace Orbbec
 
             try
             {
+                //Context.SetLoggerToFile(LogSeverity.OB_LOG_SEVERITY_DEBUG, "C:\\Log\\OrbbecSDK");
                 Context context = new Context();
 
                 DeviceList deviceList = context.QueryDeviceList();
 
                 uint devCount = deviceList.DeviceCount();
 
-                Dictionary<string, Pipeline> pipes = new Dictionary<string, Pipeline>();
+                pipes = new Dictionary<string, Pipeline>();
 
                 context.SetDeviceChangedCallback((removedList, addedList) =>
                 {
@@ -194,7 +149,7 @@ namespace Orbbec
                     StartStream(deviceSN, pipe);
                 }
 
-                Task.Factory.StartNew(() =>
+                processingTask = Task.Factory.StartNew(() =>
                 {
                     while (!tokenSource.Token.IsCancellationRequested)
                     {
@@ -212,13 +167,13 @@ namespace Orbbec
                                     if (colorFrame != null && deviceColorImages.ContainsKey(deviceSN))
                                     {
                                         var colorImageControl = deviceColorImages[deviceSN];
-                                        updateColors[deviceSN] = UpdateFrame(colorImageControl, updateColors[deviceSN], colorFrame);
+                                        UpdateFrame(deviceSN, updateColors, colorImageControl, colorFrame);
                                     }
 
                                     if (depthFrame != null && deviceDepthImages.ContainsKey(deviceSN))
                                     {
                                         var depthImageControl = deviceDepthImages[deviceSN];
-                                        updateDepths[deviceSN] = UpdateFrame(depthImageControl, updateDepths[deviceSN], depthFrame);
+                                        UpdateFrame(deviceSN, updateDepths, depthImageControl, depthFrame);
                                     }
                                 }
                             }
@@ -339,24 +294,37 @@ namespace Orbbec
             }
         }
 
-        private Action<VideoFrame> UpdateFrame(Image image, Action<VideoFrame> updateAction, VideoFrame frame)
+        private void UpdateFrame(string type, Dictionary<string, Action<VideoFrame>> imageUpdateActions, Image image, VideoFrame frame)
         {
-            Dispatcher.Invoke(() =>
+            Dispatcher.InvokeAsync(() => 
             {
-                if (!(image.Source is WriteableBitmap) && updateAction == null)
+                if (!(image.Source is WriteableBitmap))
                 {
                     image.Visibility = Visibility.Visible;
                     image.Source = new WriteableBitmap((int)frame.GetWidth(), (int)frame.GetHeight(), 96d, 96d, PixelFormats.Rgb24, null);
-                    updateAction = UpdateImage(image);
+
+                    imageUpdateActions[type] = UpdateImage(image);
+                    //Console.WriteLine($"Updated action for type '{type}': {imageUpdateActions[type]}");
                 }
-                updateAction?.Invoke(frame);
+                if (imageUpdateActions.TryGetValue(type, out var action))
+                {
+                    action?.Invoke(frame);
+                }
             }, DispatcherPriority.Render);
-            return updateAction;
         }
 
-        private void Control_Closing(object sender, CancelEventArgs e)
+        private async void Control_Closing(object sender, CancelEventArgs e)
         {
             tokenSource.Cancel();
+            foreach (var pipe in pipes.Values)
+            {
+                pipe.Stop();
+            }
+            pipes.Clear();
+            if (processingTask != null)
+            {
+                await processingTask;
+            }
             if (deviceInfoTexts != null)
             {
                 deviceInfoTexts.Clear();

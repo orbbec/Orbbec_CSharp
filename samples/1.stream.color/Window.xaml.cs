@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using Common;
 
 namespace Orbbec
 {
@@ -16,6 +17,7 @@ namespace Orbbec
     public partial class ColorWindow : Window
     {
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
+        private Task processingTask;
 
         private static Action<VideoFrame> UpdateImage(Image img)
         {
@@ -27,6 +29,10 @@ namespace Orbbec
                 int stride = wbmp.BackBufferStride;
                 byte[] data = new byte[frame.GetDataSize()];
                 frame.CopyData(ref data);
+                if (frame.GetFormat() == Format.OB_FORMAT_MJPG)
+                {
+                    data = ImageConverter.ConvertMJPGToRGBData(data);
+                }
                 var rect = new Int32Rect(0, 0, width, height);
                 wbmp.WritePixels(rect, data, stride, 0);
             });
@@ -41,7 +47,7 @@ namespace Orbbec
             try
             {
                 Pipeline pipeline = new Pipeline();
-                StreamProfile colorProfile = pipeline.GetStreamProfileList(SensorType.OB_SENSOR_COLOR).GetVideoStreamProfile(0, 0, Format.OB_FORMAT_RGB, 0);
+                StreamProfile colorProfile = pipeline.GetStreamProfileList(SensorType.OB_SENSOR_COLOR).GetVideoStreamProfile(0, 0, Format.OB_FORMAT_ANY, 0);
                 Config config = new Config();
                 config.EnableStream(colorProfile);
 
@@ -49,7 +55,7 @@ namespace Orbbec
 
                 SetupWindow(colorProfile, out updateColor);
 
-                Task.Factory.StartNew(() =>
+                processingTask = Task.Factory.StartNew(() =>
                 {
                     while (!tokenSource.Token.IsCancellationRequested)
                     {
@@ -59,11 +65,11 @@ namespace Orbbec
 
                             if (colorFrame != null)
                             {
-                                Dispatcher.Invoke(DispatcherPriority.Render, updateColor, colorFrame);
+                                Dispatcher.InvokeAsync(() => updateColor(colorFrame), DispatcherPriority.Render);
                             }
                         }
                     }
-                }, tokenSource.Token);
+                }, tokenSource.Token).ContinueWith(t => pipeline.Stop());
             }
             catch (Exception e)
             {
@@ -81,9 +87,13 @@ namespace Orbbec
             }
         }
 
-        private void Control_Closing(object sender, CancelEventArgs e)
+        private async void Control_Closing(object sender, CancelEventArgs e)
         {
             tokenSource.Cancel();
+            if (processingTask != null)
+            {
+                await processingTask;
+            }
         }
     }
 }

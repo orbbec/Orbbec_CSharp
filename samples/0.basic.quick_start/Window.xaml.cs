@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using Common;
 
 namespace Orbbec
 {
@@ -16,6 +17,7 @@ namespace Orbbec
     public partial class QuickStartWindow : Window
     {
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
+        private Task processingTask;
 
         private static Action<VideoFrame> UpdateImage(Image img)
         {
@@ -27,29 +29,17 @@ namespace Orbbec
                 int stride = wbmp.BackBufferStride;
                 byte[] data = new byte[frame.GetDataSize()];
                 frame.CopyData(ref data);
-                if(frame.GetFrameType() == FrameType.OB_FRAME_DEPTH)
+                if (frame.GetFormat() == Format.OB_FORMAT_MJPG)
                 {
-                    data = ConvertDepthToRGBData(data);
+                    data = ImageConverter.ConvertMJPGToRGBData(data);
+                }
+                else if(frame.GetFrameType() == FrameType.OB_FRAME_DEPTH)
+                {
+                    data = ImageConverter.ConvertDepthToRGBData(data);
                 }
                 var rect = new Int32Rect(0, 0, width, height);
                 wbmp.WritePixels(rect, data, stride, 0);
             });
-        }
-
-        private static byte[] ConvertDepthToRGBData(byte[] depthData)
-        {
-            byte[] colorData = new byte[depthData.Length / 2 * 3];
-            for (int i = 0; i < depthData.Length; i += 2)
-            {
-                ushort depthValue = (ushort)((depthData[i + 1] << 8) | depthData[i]);
-                float depth = (float)depthValue / 1000;
-                byte depthByte = (byte)(depth * 255);
-                int index = i / 2 * 3;
-                colorData[index] = depthByte; // Red
-                colorData[index + 1] = depthByte; // Green
-                colorData[index + 2] = depthByte; // Blue
-            }
-            return colorData;
         }
 
         public QuickStartWindow()
@@ -62,8 +52,8 @@ namespace Orbbec
             try
             {
                 Pipeline pipeline = new Pipeline();
-                StreamProfile colorProfile = pipeline.GetStreamProfileList(SensorType.OB_SENSOR_COLOR).GetVideoStreamProfile(0, 0, Format.OB_FORMAT_RGB, 0);
-                StreamProfile depthProfile = pipeline.GetStreamProfileList(SensorType.OB_SENSOR_DEPTH).GetVideoStreamProfile(0, 0, Format.OB_FORMAT_Y16, 0);
+                StreamProfile colorProfile = pipeline.GetStreamProfileList(SensorType.OB_SENSOR_COLOR).GetVideoStreamProfile(0, 0, Format.OB_FORMAT_ANY, 0);
+                StreamProfile depthProfile = pipeline.GetStreamProfileList(SensorType.OB_SENSOR_DEPTH).GetVideoStreamProfile(0, 0, Format.OB_FORMAT_ANY, 0);
                 Config config = new Config();
                 config.EnableStream(colorProfile);
                 config.EnableStream(depthProfile);
@@ -72,7 +62,7 @@ namespace Orbbec
 
                 SetupWindow(colorProfile, depthProfile, out updateColor, out updateDepth);
 
-                Task.Factory.StartNew(() =>
+                processingTask = Task.Factory.StartNew(() =>
                 {
                     while (!tokenSource.Token.IsCancellationRequested)
                     {
@@ -83,15 +73,15 @@ namespace Orbbec
 
                             if (colorFrame != null)
                             {
-                                Dispatcher.Invoke(DispatcherPriority.Render, updateColor, colorFrame);
+                                Dispatcher.InvokeAsync(() => updateColor(colorFrame), DispatcherPriority.Render);
                             }
                             if (depthFrame != null)
                             {
-                                Dispatcher.Invoke(DispatcherPriority.Render, updateDepth, depthFrame);
+                                Dispatcher.InvokeAsync(() => updateDepth(depthFrame), DispatcherPriority.Render);
                             }
                         }
                     }
-                }, tokenSource.Token);
+                }, tokenSource.Token).ContinueWith(t => pipeline.Stop());
             }
             catch (Exception e)
             {
@@ -116,9 +106,13 @@ namespace Orbbec
             }
         }
 
-        private void Control_Closing(object sender, CancelEventArgs e)
+        private async void Control_Closing(object sender, CancelEventArgs e)
         {
             tokenSource.Cancel();
+            if (processingTask != null)
+            {
+                await processingTask;
+            }
         }
     }
 }

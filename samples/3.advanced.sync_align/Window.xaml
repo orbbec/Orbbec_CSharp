@@ -13,9 +13,9 @@
         <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center">
             <CheckBox x:Name="syncCheckBox" Content="Sync" VerticalContentAlignment="Center" Foreground="YellowGreen"
                       FontSize="18" Margin="10" Click="Sync_Click" />
-            <RadioButton x:Name="hwAlign" Content="HW Align" VerticalContentAlignment="Center" Foreground="YellowGreen"
+            <RadioButton x:Name="d2cAlign" Content="D2C" VerticalContentAlignment="Center" Foreground="YellowGreen"
                          FontSize="18" Margin="10" />
-            <RadioButton x:Name="swAlign" Content="SW Align" VerticalContentAlignment="Center" Foreground="YellowGreen"
+            <RadioButton x:Name="c2dAlign" Content="C2D" VerticalContentAlignment="Center" Foreground="YellowGreen"
                          FontSize="18" Margin="10" />
         </StackPanel>
     </Grid>

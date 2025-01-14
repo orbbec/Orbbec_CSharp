@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using Common;
 
 namespace Orbbec
 {
@@ -16,6 +17,7 @@ namespace Orbbec
     public partial class DepthWindow : Window
     {
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
+        private Task processingTask;
 
         private static Action<VideoFrame> UpdateImage(Image img)
         {
@@ -27,26 +29,10 @@ namespace Orbbec
                 int stride = wbmp.BackBufferStride;
                 byte[] data = new byte[frame.GetDataSize()];
                 frame.CopyData(ref data);
-                data = ConvertDepthToRGBData(data);
+                data = ImageConverter.ConvertDepthToRGBData(data);
                 var rect = new Int32Rect(0, 0, width, height);
                 wbmp.WritePixels(rect, data, stride, 0);
             });
-        }
-
-        private static byte[] ConvertDepthToRGBData(byte[] depthData)
-        {
-            byte[] colorData = new byte[depthData.Length / 2 * 3];
-            for (int i = 0; i < depthData.Length; i += 2)
-            {
-                ushort depthValue = (ushort)((depthData[i + 1] << 8) | depthData[i]);
-                float depth = (float)depthValue / 1000;
-                byte depthByte = (byte)(depth * 255);
-                int index = i / 2 * 3;
-                colorData[index] = depthByte; // Red
-                colorData[index + 1] = depthByte; // Green
-                colorData[index + 2] = depthByte; // Blue
-            }
-            return colorData;
         }
 
         public DepthWindow()
@@ -67,7 +53,7 @@ namespace Orbbec
 
                 SetupWindow(depthProfile, out updateDepth);
 
-                Task.Factory.StartNew(() =>
+                processingTask = Task.Factory.StartNew(() =>
                 {
                     while (!tokenSource.Token.IsCancellationRequested)
                     {
@@ -77,11 +63,11 @@ namespace Orbbec
 
                             if (depthFrame != null)
                             {
-                                Dispatcher.Invoke(DispatcherPriority.Render, updateDepth, depthFrame);
+                                Dispatcher.InvokeAsync(() => updateDepth(depthFrame), DispatcherPriority.Render);
                             }
                         }
                     }
-                }, tokenSource.Token);
+                }, tokenSource.Token).ContinueWith(t => pipeline.Stop());
             }
             catch (Exception e)
             {
@@ -99,9 +85,13 @@ namespace Orbbec
             }
         }
 
-        private void Control_Closing(object sender, CancelEventArgs e)
+        private async void Control_Closing(object sender, CancelEventArgs e)
         {
             tokenSource.Cancel();
+            if (processingTask != null)
+            {
+                await processingTask;
+            }
         }
     }
 }
