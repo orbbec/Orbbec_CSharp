@@ -6,6 +6,9 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using System.ComponentModel;
+using System.Collections.Generic;
+using Common;
 
 namespace Orbbec
 {
@@ -15,6 +18,8 @@ namespace Orbbec
     public partial class HDRMergeWindow : Window
     {
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
+        private Task postProcessingTask;
+        private Dictionary<string, Action<VideoFrame>> imageUpdateActions = new Dictionary<string, Action<VideoFrame>>();
 
         private static Action<VideoFrame> UpdateImage(Image img)
         {
@@ -26,34 +31,15 @@ namespace Orbbec
                 int stride = wbmp.BackBufferStride;
                 byte[] data = new byte[frame.GetDataSize()];
                 frame.CopyData(ref data);
-                data = ConvertDepthToRGBData(data);
+                data = ImageConverter.ConvertDepthToRGBData(data);
                 var rect = new Int32Rect(0, 0, width, height);
                 wbmp.WritePixels(rect, data, stride, 0);
             });
         }
 
-        private static byte[] ConvertDepthToRGBData(byte[] depthData)
-        {
-            byte[] colorData = new byte[depthData.Length / 2 * 3];
-            for (int i = 0; i < depthData.Length; i += 2)
-            {
-                ushort depthValue = (ushort)((depthData[i + 1] << 8) | depthData[i]);
-                float depth = (float)depthValue / 1000;
-                byte depthByte = (byte)(depth * 255);
-                int index = i / 2 * 3;
-                colorData[index] = depthByte; // Red
-                colorData[index + 1] = depthByte; // Green
-                colorData[index + 2] = depthByte; // Blue
-            }
-            return colorData;
-        }
-
         public HDRMergeWindow()
         {
             InitializeComponent();
-
-            Action<VideoFrame> updateDepth = null;
-            Action<VideoFrame> updateDepthPP = null;
 
             try
             {
@@ -63,7 +49,7 @@ namespace Orbbec
                 Device device = pipeline.GetDevice();
 
                 // Check if the device supports HDR merge
-                if (false == device.IsPropertySupported(PropertyId.OB_STRUCT_DEPTH_HDR_CONFIG, PermissionType.OB_PERMISSION_READ_WRITE))
+                if (device.IsPropertySupported(PropertyId.OB_STRUCT_DEPTH_HDR_CONFIG, PermissionType.OB_PERMISSION_READ_WRITE))
                 {
                     Config config = new Config();
 
@@ -71,9 +57,26 @@ namespace Orbbec
 
                     pipeline.Start(config);
 
-                    ThresholdFilter filter = new ThresholdFilter();
+                    Sensor sensor = device.GetSensor(SensorType.OB_SENSOR_DEPTH);
+                    List<Filter> filterList = sensor.CreateRecommendedFilters();
+                    ThresholdFilter filter = null;
+                    foreach (var f in filterList)
+                    {
+                        if (f.Name().Equals("ThresholdFilter"))
+                        {
+                            filter = f.As<ThresholdFilter>();
+                        }
+                    }
+                    if (filter == null)
+                    {
+                        pipeline.Stop();
+                        MessageBox.Show("The current device does not support ThresholdFilter!", "´íÎó", MessageBoxButton.OK, MessageBoxImage.Error);
+                        Environment.Exit(0);
+                        return;
+                    }
+                    filter.SetValueRange(500, 1000);
 
-                    Task.Factory.StartNew(() =>
+                    postProcessingTask = Task.Factory.StartNew(() =>
                     {
                         while (!tokenSource.Token.IsCancellationRequested)
                         {
@@ -85,25 +88,24 @@ namespace Orbbec
                                 var processedFrame = depthFrame;
                                 if (filter != null)
                                 {
-                                    filter.SetValueRange(500, 1000);
                                     processedFrame = filter.Process(processedFrame).As<DepthFrame>();
                                 }
-                                updateDepth = UpdateFrame(imgDepth, updateDepth, depthFrame);
-                                updateDepthPP = UpdateFrame(imgDepthPP, updateDepthPP, processedFrame);
+                                UpdateFrame("depth", imgDepth, depthFrame);
+                                UpdateFrame("depthPP", imgDepthPP, processedFrame);
                             }
                         }
                     }, tokenSource.Token).ContinueWith(t =>
                     {
-                        pipeline.Stop();
-                        pipeline.Dispose();
-                        filter.Dispose();
                         if (filter != null)
                             filter.Dispose();
+                        pipeline.Stop();
                     });
                 }
                 else
                 {
-                    MessageBox.Show("HDR merge is not supported");
+                    pipeline.Stop();
+                    MessageBox.Show("HDR merge is not supported!", "´íÎó", MessageBoxButton.OK, MessageBoxImage.Error);
+                    Environment.Exit(0);
                 }
             }
             catch (Exception e)
@@ -113,24 +115,30 @@ namespace Orbbec
             }
         }
 
-        private Action<VideoFrame> UpdateFrame(Image image, Action<VideoFrame> updateAction, VideoFrame frame)
+        private void UpdateFrame(string type, Image image, VideoFrame frame)
         {
-            Dispatcher.Invoke(() =>
+            Dispatcher.InvokeAsync(() =>
             {
-                if (!(image.Source is WriteableBitmap) && updateAction == null)
+                if (!(image.Source is WriteableBitmap))
                 {
                     image.Visibility = Visibility.Visible;
                     image.Source = new WriteableBitmap((int)frame.GetWidth(), (int)frame.GetHeight(), 96d, 96d, PixelFormats.Rgb24, null);
-                    updateAction = UpdateImage(image);
+                    imageUpdateActions[type] = UpdateImage(image);
                 }
-                updateAction?.Invoke(frame);
+                if (imageUpdateActions.TryGetValue(type, out var action))
+                {
+                    action?.Invoke(frame);
+                }
             }, DispatcherPriority.Render);
-            return updateAction;
         }
 
-        private void Control_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private async void Control_Closing(object sender, CancelEventArgs e)
         {
             tokenSource.Cancel();
+            if (postProcessingTask != null)
+            {
+                await postProcessingTask;
+            }
         }
     }
 }

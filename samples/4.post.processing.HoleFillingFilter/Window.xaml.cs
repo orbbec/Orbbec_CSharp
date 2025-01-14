@@ -6,6 +6,9 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using System.ComponentModel;
+using System.Collections.Generic;
+using Common;
 
 namespace Orbbec
 {
@@ -15,6 +18,8 @@ namespace Orbbec
     public partial class HoleFillingFilterWindow : Window
     {
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
+        private Task postProcessingTask;
+        private Dictionary<string, Action<VideoFrame>> imageUpdateActions = new Dictionary<string, Action<VideoFrame>>();
 
         private static Action<VideoFrame> UpdateImage(Image img)
         {
@@ -26,40 +31,19 @@ namespace Orbbec
                 int stride = wbmp.BackBufferStride;
                 byte[] data = new byte[frame.GetDataSize()];
                 frame.CopyData(ref data);
-                data = ConvertDepthToRGBData(data);
+                data = ImageConverter.ConvertDepthToRGBData(data);
                 var rect = new Int32Rect(0, 0, width, height);
                 wbmp.WritePixels(rect, data, stride, 0);
             });
-        }
-
-        private static byte[] ConvertDepthToRGBData(byte[] depthData)
-        {
-            byte[] colorData = new byte[depthData.Length / 2 * 3];
-            for (int i = 0; i < depthData.Length; i += 2)
-            {
-                ushort depthValue = (ushort)((depthData[i + 1] << 8) | depthData[i]);
-                float depth = (float)depthValue / 1000;
-                byte depthByte = (byte)(depth * 255);
-                int index = i / 2 * 3;
-                colorData[index] = depthByte; // Red
-                colorData[index + 1] = depthByte; // Green
-                colorData[index + 2] = depthByte; // Blue
-            }
-            return colorData;
         }
 
         public HoleFillingFilterWindow()
         {
             InitializeComponent();
 
-            Action<VideoFrame> updateDepth = null;
-            Action<VideoFrame> updateDepthPP = null;
-
             try
             {
                 Pipeline pipeline = new Pipeline();
-
-                Device device = pipeline.GetDevice();
 
                 Config config = new Config();
 
@@ -67,9 +51,28 @@ namespace Orbbec
 
                 pipeline.Start(config);
 
-                HoleFillingFilter filter = new HoleFillingFilter();
+                Device device = pipeline.GetDevice();
+                Sensor sensor = device.GetSensor(SensorType.OB_SENSOR_DEPTH);
+                List<Filter> filterList = sensor.CreateRecommendedFilters();
+                HoleFillingFilter filter = null;
+                foreach (var f in filterList)
+                {
+                    if (f.Name().Equals("HoleFillingFilter"))
+                    {
+                        filter = f.As<HoleFillingFilter>();
+                    }
+                }
+                if (filter == null)
+                {
+                    pipeline.Stop();
+                    MessageBox.Show("The current device does not support HoleFillingFilter!", "´íÎó", MessageBoxButton.OK, MessageBoxImage.Error);
+                    Environment.Exit(0);
+                    return;
+                }
+                HoleFillingMode mode = HoleFillingMode.OB_HOLE_FILL_NEAREST;
+                filter.SetFilterMode(mode);
 
-                Task.Factory.StartNew(() =>
+                postProcessingTask = Task.Factory.StartNew(() =>
                 {
                     while (!tokenSource.Token.IsCancellationRequested)
                     {
@@ -81,21 +84,17 @@ namespace Orbbec
                             var processedFrame = depthFrame;
                             if (filter != null)
                             {
-                                HoleFillingMode mode = HoleFillingMode.OB_HOLE_FILL_NEAREST;
-                                filter.SetFilterMode(mode);
                                 processedFrame = filter.Process(processedFrame).As<DepthFrame>();
                             }
-                            updateDepth = UpdateFrame(imgDepth, updateDepth, depthFrame);
-                            updateDepthPP = UpdateFrame(imgDepthPP, updateDepthPP, processedFrame);
+                            UpdateFrame("depth", imgDepth, depthFrame);
+                            UpdateFrame("depthPP", imgDepthPP, processedFrame);
                         }
                     }
                 }, tokenSource.Token).ContinueWith(t =>
                 {
-                    pipeline.Stop();
-                    pipeline.Dispose();
-                    filter.Dispose();
                     if (filter != null)
                         filter.Dispose();
+                    pipeline.Stop();
                 });
             }
             catch (Exception e)
@@ -105,24 +104,30 @@ namespace Orbbec
             }
         }
 
-        private Action<VideoFrame> UpdateFrame(Image image, Action<VideoFrame> updateAction, VideoFrame frame)
+        private void UpdateFrame(string type, Image image, VideoFrame frame)
         {
-            Dispatcher.Invoke(() =>
+            Dispatcher.InvokeAsync(() =>
             {
-                if (!(image.Source is WriteableBitmap) && updateAction == null)
+                if (!(image.Source is WriteableBitmap))
                 {
                     image.Visibility = Visibility.Visible;
                     image.Source = new WriteableBitmap((int)frame.GetWidth(), (int)frame.GetHeight(), 96d, 96d, PixelFormats.Rgb24, null);
-                    updateAction = UpdateImage(image);
+                    imageUpdateActions[type] = UpdateImage(image);
                 }
-                updateAction?.Invoke(frame);
+                if (imageUpdateActions.TryGetValue(type, out var action))
+                {
+                    action?.Invoke(frame);
+                }
             }, DispatcherPriority.Render);
-            return updateAction;
         }
 
-        private void Control_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private async void Control_Closing(object sender, CancelEventArgs e)
         {
             tokenSource.Cancel();
+            if (postProcessingTask != null)
+            {
+                await postProcessingTask;
+            }
         }
     }
 }
