@@ -7,9 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using System.Runtime.InteropServices;
-using System.IO;
-using SystemDrawing = System.Drawing;
+using Common;
 
 namespace Orbbec
 {
@@ -19,6 +17,7 @@ namespace Orbbec
     public partial class HWD2CAlignWindow : Window
     {
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
+        private Task processingTask;
         private bool enableAlignMode = true;
         private Pipeline pipeline;
         private Config config;
@@ -33,64 +32,24 @@ namespace Orbbec
                 int stride = wbmp.BackBufferStride;
                 byte[] data = new byte[frame.GetDataSize()];
                 frame.CopyData(ref data);
-                if (frame.GetFrameType() == FrameType.OB_FRAME_COLOR &&
-                    frame.GetFormat() == Format.OB_FORMAT_MJPG)
+                if (frame.GetFrameType() == FrameType.OB_FRAME_COLOR)
                 {
-                    data = ConvertMJPGToRGB(data);
+                    if (frame.GetFormat() == Format.OB_FORMAT_MJPG)
+                    {
+                        data = ImageConverter.ConvertMJPGToRGBData(data);
+                    }
+                    //else if (frame.GetFormat() == Format.OB_FORMAT_BGRA)
+                    //{
+                    //    data = ConvertBGRAToRGBData(data);
+                    //}
                 }
                 else if (frame.GetFrameType() == FrameType.OB_FRAME_DEPTH)
                 {
-                    data = ConvertDepthToRGBData(data);
+                    data = ImageConverter.ConvertDepthToRGBData(data);
                 }
                 var rect = new Int32Rect(0, 0, width, height);
                 wbmp.WritePixels(rect, data, stride, 0);
             });
-        }
-
-        private static byte[] ConvertMJPGToRGB(byte[] mjpgData)
-        {
-            using (var ms = new MemoryStream(mjpgData))
-            {
-                using (var jpegImage = new SystemDrawing.Bitmap(ms))
-                {
-                    SystemDrawing.Rectangle rect = new SystemDrawing.Rectangle(0, 0, jpegImage.Width, jpegImage.Height);
-                    SystemDrawing.Imaging.BitmapData bmpData =
-                        jpegImage.LockBits(rect, SystemDrawing.Imaging.ImageLockMode.ReadOnly, SystemDrawing.Imaging.PixelFormat.Format24bppRgb);
-
-                    IntPtr ptr = bmpData.Scan0;
-                    int size = Math.Abs(bmpData.Stride) * jpegImage.Height;
-                    byte[] rgbData = new byte[size];
-
-                    Marshal.Copy(ptr, rgbData, 0, size);
-
-                    jpegImage.UnlockBits(bmpData);
-
-                    for (int i = 0; i < rgbData.Length; i += 3)
-                    {
-                        byte temp = rgbData[i];
-                        rgbData[i] = rgbData[i + 2];
-                        rgbData[i + 2] = temp;
-                    }
-
-                    return rgbData;
-                }
-            }
-        }
-
-        private static byte[] ConvertDepthToRGBData(byte[] depthData)
-        {
-            byte[] colorData = new byte[depthData.Length / 2 * 3];
-            for (int i = 0; i < depthData.Length; i += 2)
-            {
-                ushort depthValue = (ushort)((depthData[i + 1] << 8) | depthData[i]);
-                float depth = (float)depthValue / 1000;
-                byte depthByte = (byte)(depth * 255);
-                int index = i / 2 * 3;
-                colorData[index] = depthByte; // Red
-                colorData[index + 1] = depthByte; // Green
-                colorData[index + 2] = depthByte; // Blue
-            }
-            return colorData;
         }
 
         public HWD2CAlignWindow()
@@ -109,6 +68,7 @@ namespace Orbbec
                 config = CreateHwD2CAlignConfig(pipeline);
                 if (config == null)
                 {
+                    pipeline.Stop();
                     MessageBox.Show("Current device does not support hardware depth-to-color alignment.", "´íÎó", MessageBoxButton.OK, MessageBoxImage.Error);
                     Environment.Exit(0);
                     return;
@@ -116,7 +76,7 @@ namespace Orbbec
 
                 pipeline.Start(config);
 
-                Task.Factory.StartNew(() =>
+                processingTask = Task.Factory.StartNew(() =>
                 {
                     while (!tokenSource.Token.IsCancellationRequested)
                     {
@@ -127,12 +87,10 @@ namespace Orbbec
 
                             if (colorFrame != null)
                             {
-                                //Dispatcher.Invoke(DispatcherPriority.Render, updateColor, colorFrame);
                                 updateColor = UpdateFrame(imgColor, updateColor, colorFrame);
                             }
                             if (depthFrame != null)
                             {
-                                //Dispatcher.Invoke(DispatcherPriority.Render, updateDepth, depthFrame);
                                 updateDepth = UpdateFrame(imgDepth, updateDepth, depthFrame);
                             }
                         }
@@ -229,11 +187,20 @@ namespace Orbbec
         {
             Dispatcher.Invoke(() =>
             {
+                int width = (int)frame.GetWidth();
+                int height = (int)frame.GetHeight();
                 if (!(image.Source is WriteableBitmap writeableBitmap) ||
-                    writeableBitmap.PixelWidth != (int)frame.GetWidth() || writeableBitmap.PixelHeight != (int)frame.GetHeight())
+                    writeableBitmap.PixelWidth != width || writeableBitmap.PixelHeight != height)
                 {
                     image.Visibility = Visibility.Visible;
-                    image.Source = new WriteableBitmap((int)frame.GetWidth(), (int)frame.GetHeight(), 96d, 96d, PixelFormats.Rgb24, null);
+                    if (width * height * 4 == frame.GetDataSize())
+                    {
+                        image.Source = new WriteableBitmap(width, height, 96d, 96d, PixelFormats.Bgra32, null);
+                    }
+                    else
+                    {
+                        image.Source = new WriteableBitmap(width, height, 96d, 96d, PixelFormats.Rgb24, null);
+                    }
                     updateAction = UpdateImage(image);
                 }
                 updateAction?.Invoke(frame);
@@ -241,9 +208,17 @@ namespace Orbbec
             return updateAction;
         }
 
-        private void Control_Closing(object sender, CancelEventArgs e)
+        private async void Control_Closing(object sender, CancelEventArgs e)
         {
             tokenSource.Cancel();
+            if (pipeline != null)
+            {
+                pipeline.Stop();
+            }
+            if (processingTask != null)
+            {
+                await processingTask;
+            }
         }
     }
 }
