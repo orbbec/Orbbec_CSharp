@@ -8,12 +8,14 @@ The v2-main branch, C# Wrapper is based the open source version of [Orbbec SDK v
 - Windows: Windows 10 (x64)
 
 # Platform support
-| **Products List** | **Firmware Version**        |
-|-------------------|-----------------------------|
-| Gemini 335        | 1.2.20                   |
-| Gemini 335L        | 1.2.20                    |
-| Gemini 336        | 1.2.20                      |
-| Gemini 336L        | 1.2.20                    |
+| **Products List** | **Minimal Firmware Version** |
+|-------------------|------------------------------|
+| Gemini 330        | 1.2.20                       |
+| Gemini 330L       | 1.2.20                       |
+| Gemini 335        | 1.2.20                       |
+| Gemini 335L       | 1.2.20                       |
+| Gemini 336        | 1.2.20                       |
+| Gemini 336L       | 1.2.20                       |
 | Femto Bolt        | 1.0.6/1.0.9                  |
 | Femto Mega        | 1.1.7/1.2.7                  |
 
