@@ -1,0 +1,146 @@
+
+## Camera Configuration
+
+### Obtain the Serial Number
+
+```c#
+Context context = new Context();
+DeviceList deviceList = context.QueryDeviceList();
+Device device = deviceList.GetDevice(0);
+DeviceInfo deviceInfo = device.GetDeviceInfo();
+// get device serial number
+string serialNumber = deviceInfo.SerialNumber();
+```
+
+### Obtain the Camera Intrinsic and Extrinsic Parameters
+```c#
+Pipeline pipeline = new Pipeline();
+Config config = new Config();
+config.EnableVideoStream(StreamType.OB_STREAM_DEPTH, 0, 0, 0, Format.OB_FORMAT_Y16);
+config.EnableVideoStream(StreamType.OB_STREAM_COLOR, 0, 0, 0, Format.OB_FORMAT_RGB);
+config.SetFrameAggregateOutputMode(FrameAggregateOutputMode.OB_FRAME_AGGREGATE_OUTPUT_ALL_TYPE_FRAME_REQUIRE);
+pipeline.Start(config);
+var profile_list = pipeline.GetStreamProfileList(SensorType.OB_SENSOR_COLOR);
+// Get color_profile
+var color_profile = profile_list.GetVideoStreamProfile(0,0, Format.OB_FORMAT_UNKNOWN,0);
+profile_list = pipeline.GetStreamProfileList(SensorType.OB_SENSOR_DEPTH);
+//Get depth_profile
+var depth_profile = profile_list.GetVideoStreamProfile(0, 0, Format.OB_FORMAT_UNKNOWN, 0);
+//Get external parameters
+var extrinsic = depth_profile.GetExtrinsicTo(color_profile);
+Console.WriteLine($"extrinsic={extrinsic}");
+//Get depth inernal parameters
+var depth_intrinsics = depth_profile.GetIntrinsic();
+Console.WriteLine($"depth_intrinsics={depth_intrinsics}");
+//Get depth distortion parameter
+var depth_distortion = depth_profile.GetDistortion();
+Console.WriteLine($"depth_distortion={depth_distortion}");
+//Get color internala parameters
+var color_intrinsics = color_profile.GetIntrinsic();
+Console.WriteLine($"color_intrinsics={color_intrinsics}");
+//Get color distortion parameter
+var color_distortion = color_profile.GetDistortion();
+Console.WriteLine($"color_distortion={color_distortion}");
+```
+
+### Open Device
+
+Method 1: Obtain the specified device by specifying the index number of the enumerated device list.
+
+```c#
+Context context = new Context();
+DeviceList deviceList = context.QueryDeviceList();
+Device device = deviceList.GetDevice(0);
+```
+
+Method 2: Obtain the specified device by specifying the SN of the enumerated device list.
+
+```c#
+Context context = new Context();
+DeviceList deviceList = context.QueryDeviceList();
+// For example, obtain the device whose SN number is "CP1S34D0004S".
+Device device = deviceList.GetDeviceBySN("CP1S34D0004S");
+```
+
+Method 3: Obtain the specified device by specifying the UID of the enumerated device list.
+
+```c#
+Context context = new Context();
+DeviceList deviceList = context.QueryDeviceList();
+// For example, the device with uid f7da3fb.
+Device device = deviceList.GetDeviceByUid("f7da3fb");
+```
+
+Method 4: Get device through pipiline
+
+```c#
+Pipeline pipeline = new Pipeline();
+Device device = pipeline.GetDevice();
+```
+
+### Device Reboot
+
+```c#
+Context context = new Context();
+DeviceList deviceList = context.QueryDeviceList();
+// get device
+Device device = deviceList.GetDevice(0);
+// reboot device
+device.Reboot();
+```
+
+### Laser Switch
+
+*   Notes: The instruction for switching lasers of the Gemini 330 series is: PropertyId.OB_PROP_LASER_CONTROL_INT.
+    
+
+### LDP Switch
+```c#
+Pipeline pipeline = new Pipeline();
+var device = pipeline.GetDevice();
+//#True：turn on LDP，False：turn off LDP
+device.SetBoolProperty(PropertyId.OB_PROP_LDP_BOOL, true);
+```
+
+### Obtain LDP Protection Measurements
+
+```c#
+Pipeline pipeline = new Pipeline();
+Device device = pipeline.GetDevice();
+int distance = device.GetIntProperty(PropertyId.OB_PROP_LDP_MEASURE_DISTANCE_INT);
+Console.WriteLine(distance);
+```
+
+### Obtain LDP Protection Status
+
+```c#
+Pipeline pipeline = new Pipeline();
+Device device = pipeline.GetDevice();
+// Return value true:Trigger LDP protection
+bool ldpStatus = device.GetBoolProperty(PropertyId.OB_PROP_LDP_STATUS_BOOL);
+Console.WriteLine(ldpStatus);
+```
+
+### Device Time Synchronization
+
+Device Timing: sets the host time to the device.
+
+Gemini 2/2L, Gemini 330 series, Femto Mega、Femto Bolt support device timing.
+
+*   If only a single device is connected, the following interface can be called:
+    
+
+```c#
+Pipeline pipeline = new Pipeline();
+Device device = pipeline.GetDevice();
+device.TimerSyncWithHost();
+```
+
+*   If multiple devices are connected at the same time, the following interfaces can be called:
+    
+
+```c#
+Context context = new Context();
+// Parameter: The interval for auto-repeated synchronization, in milliseconds. If the value is 0, synchronization is performed only once.
+context.EnableDeviceClockSync(60000);
+```

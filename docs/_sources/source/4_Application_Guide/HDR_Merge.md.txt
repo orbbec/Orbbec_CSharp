@@ -1,0 +1,61 @@
+## HDR Merge
+
+### Obtain Video Stream
+
+```c#
+Pipeline pipeline = new Pipeline();
+// Get the device from the pipeline
+device = pipeline.GetDevice();
+
+// Check if the device supports HDR merge
+if (!device.IsPropertySupported(PropertyId.OB_STRUCT_DEPTH_HDR_CONFIG, PermissionType.OB_PERMISSION_READ_WRITE))
+{
+  Console.WriteLine("Current default device does not support HDR merge");
+  return;
+}
+
+// Setup stream profiles for depth and IR cameras
+StreamProfile depthProfile = pipeline.GetStreamProfileList(SensorType.OB_SENSOR_DEPTH).GetVideoStreamProfile(0, 0, Format.OB_FORMAT_Y16, 0);
+StreamProfile irLeftProfile = pipeline.GetStreamProfileList(SensorType.OB_SENSOR_IR_LEFT).GetVideoStreamProfile(0, 0, Format.OB_FORMAT_Y8, 0);
+StreamProfile irRightProfile = pipeline.GetStreamProfileList(SensorType.OB_SENSOR_IR_RIGHT).GetVideoStreamProfile(0, 0, Format.OB_FORMAT_Y8, 0);
+// Configure which streams to enable or disable for the Pipeline by creating a Config.
+Config config = new Config();
+config.EnableStream(depthProfile);
+config.EnableStream(irLeftProfile);
+config.EnableStream(irRightProfile);
+
+pipeline.Start(config);
+```
+
+### Set Hdr Config
+
+```c#
+// Set HDR configuration values
+HdrMerge hdrMerge = new HdrMerge();
+hdrConfig = new HdrConfig
+{
+  enable = 1, // enable HDR merge
+  exposure_1 = 7500,
+  gain_1 = 24,
+  exposure_2 = 100,
+  gain_2 = 16
+};
+device.SetStructuredData(PropertyId.OB_STRUCT_DEPTH_HDR_CONFIG, hdrConfig);
+```
+
+### HDR merge processing
+
+```c#
+// HDR merge processing and update the HDR image
+using (var frames = pipeline.WaitForFrames(100))
+{
+    if (frames == null) continue;
+    var result = hdrMerge.Process(frames);
+    if (result == null) continue;
+    var resultFrameSet = result.As<Frameset>();
+    var resultDepthFrame = resultFrameSet.GetFrame(FrameType.OB_FRAME_DEPTH).As<DepthFrame>();
+}  
+```
+
+The complete sample code can be found in The complete sample code can be found in /OrbbecSDK_CSharp/samples/
+3.advanced.hdr

@@ -1,0 +1,37 @@
+# Windows C# SDK Compilation and Installation
+
+Here, it is assumed that you have installed Cmake correctly. If you have not installed Cmake,you can refer to the Cmake official website for installation.
+
+2.1  Open Cmake, set the source code path, and set the “build” folder as the path for generating binary files, as shown in the following figure.
+
+2.2 First, click Configure, then select x64 in the dialog box that appears, and finally click Finish.
+
+![compile-1.png](../image/compile-1.png)
+
+2.3 Click “Generate”, as shown below:
+
+![compile-2.png](../image/compile-2.png)
+
+2.4 Use the file explorer to directly start the Visual Studio project in the build directory, as shown in the following figure:
+
+![compile-3.png](../image/compile-3.png)
+
+2.5 Open the project, as shown below, First, select Release, then choose ALL BUILD to compile, and finally select INSTALL.
+
+![compile-4.png](../image/compile-4.png)
+
+2.6 The compiled sample is located in the build/install/bin directory. 
+
+![compile-5.png](../image/compile-5.png)
+
+2.7 Click on 0.basic.quick_start.exe, and the running result is as follows
+
+![compile-6.png](../image/compile-6.png)
+
+2.8 You can also use a script to generate the project project file as follows,The name of the script is build.bat, put it in the same directory as CMakeLists.txt.
+
+![compile-7.png](../image/compile-7.png)
+
+Double click build.bat will create a new build folder, the generated project files will be placed in the build folder, so that you can avoid the project files and source code together!
+
+![compile-8.png](../image/compile-8.png)

@@ -1,0 +1,22 @@
+## IR Parameter Settings
+
+### Set IR AE
+```c#
+Pipeline pipeline = new Pipeline();
+Device device = pipeline.GetDevice();
+// True open IR AE， False: close IR AE
+device.SetBoolProperty(PropertyId.OB_PROP_IR_AUTO_EXPOSURE_BOOL, true);
+```
+
+### Set IR Exposure/Gain
+
+```c#
+Pipeline pipeline = new Pipeline();
+Device device = pipeline.GetDevice();
+// Close IR AE
+device.SetBoolProperty(PropertyId.OB_PROP_IR_AUTO_EXPOSURE_BOOL, false);
+// set IR exposure
+device.SetIntProperty(PropertyId.OB_PROP_IR_EXPOSURE_INT, 100);
+// set IR gain
+device.SetIntProperty(PropertyId.OB_PROP_IR_GAIN_INT, 64);
+```

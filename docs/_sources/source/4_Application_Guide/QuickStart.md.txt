@@ -1,0 +1,54 @@
+# Build your First Camera Application
+
+0.basic.quick_start show how to use the SDK to capture video streams with minimal code.
+
+*   The data flow diagram for quick start sample is as follows:
+    
+
+![compile-9.png](../image/compile-9.png)
+
+
+```c#
+// Create a pipeline to start the stream.
+Pipeline pipeline = new Pipeline();
+
+// Create configuration files for color and depth streams. 0 is the default configuration.
+StreamProfile colorProfile = pipeline.GetStreamProfileList(SensorType.OB_SENSOR_COLOR).GetVideoStreamProfile(0, 0, Format.OB_FORMAT_RGB, 0);
+StreamProfile depthProfile = pipeline.GetStreamProfileList(SensorType.OB_SENSOR_DEPTH).GetVideoStreamProfile(0, 0, Format.OB_FORMAT_Y16, 0);
+
+// Enable color and depth streams for the pipeline by creating a configuration.
+Config config = new Config();
+config.EnableStream(colorProfile);
+config.EnableStream(depthProfile);
+
+// Start the pipeline with config.
+pipeline.Start(config);
+
+// Initialize the rendering window through the stream profile.
+SetupWindow(colorProfile, depthProfile, out updateColor, out updateDepth);
+
+Task.Factory.StartNew(() =>
+{
+    while (!tokenSource.Token.IsCancellationRequested)
+    {
+        // Wait for up to 100ms for a frameset in blocking mode.
+        using (var frames = pipeline.WaitForFrames(100))
+        {
+            // get color and depth frame from frameset.
+            var colorFrame = frames?.GetColorFrame(); 
+            var depthFrame = frames?.GetDepthFrame();
+
+            // Render colorFrame.
+            if (colorFrame != null)
+            {
+                Dispatcher.Invoke(DispatcherPriority.Render, updateColor, colorFrame);
+            }
+            // Render depthFrame.
+            if (depthFrame != null)
+            {
+                Dispatcher.Invoke(DispatcherPriority.Render, updateDepth, depthFrame);
+            }
+        }
+    }
+};
+```

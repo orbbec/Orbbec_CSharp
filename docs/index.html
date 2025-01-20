@@ -1,0 +1,276 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OrbbecSDK v2 C# Wrapper User’s Guide &mdash; OrbbecSDK v2 C# Wrapper User&#39;s Guide  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=a2eacb60" />
+
+  
+    <link rel="shortcut icon" href="_static/orbbec_footerlogo_3d_world.svg"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
+      <script src="_static/doctools.js?v=888ff710"></script>
+      <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="1. Overview" href="source/1_overview/overview.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            OrbbecSDK v2 C# Wrapper User's Guide
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="source/1_overview/overview.html">1. Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="source/1_overview/Introduction.html">1.1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source/1_overview/Support_platform.html">1.2. Support Platforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source/1_overview/Support_Hardware_Products.html">1.3. Support Hardware Products</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="source/2_installation/installation.html">2. Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="source/2_installation/Compilation.html">2.1. Windows C# SDK Compilation and Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="source/4_Application_Guide/Application_Guide.html">3. Application Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="source/4_Application_Guide/QuickStart.html">3.1. Build your First Camera Application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source/4_Application_Guide/Data_Stream_acquisition.html">3.2. Obtain Data Stream</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Data_Stream_acquisition.html#stream-profile">3.2.1. Stream Profile</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Data_Stream_acquisition.html#obtain-video-stream">3.2.2. Obtain Video Stream</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Data_Stream_acquisition.html#obtain-imu-data">3.2.3. Obtain IMU Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Data_Stream_acquisition.html#point-cloud">3.2.4. Point Cloud</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="source/4_Application_Guide/Data_Stream_acquisition.html#depth-point-cloud">3.2.4.1. Depth Point Cloud</a></li>
+<li class="toctree-l4"><a class="reference internal" href="source/4_Application_Guide/Data_Stream_acquisition.html#rgbd-point-cloud">3.2.4.2. RGBD Point Cloud</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="source/4_Application_Guide/Camera_configuration.html">3.3. Camera Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Camera_configuration.html#obtain-the-serial-number">3.3.1. Obtain the Serial Number</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Camera_configuration.html#obtain-the-camera-intrinsic-and-extrinsic-parameters">3.3.2. Obtain the Camera Intrinsic and Extrinsic Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Camera_configuration.html#open-device">3.3.3. Open Device</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Camera_configuration.html#device-reboot">3.3.4. Device Reboot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Camera_configuration.html#laser-switch">3.3.5. Laser Switch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Camera_configuration.html#ldp-switch">3.3.6. LDP Switch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Camera_configuration.html#obtain-ldp-protection-measurements">3.3.7. Obtain LDP Protection Measurements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Camera_configuration.html#obtain-ldp-protection-status">3.3.8. Obtain LDP Protection Status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Camera_configuration.html#device-time-synchronization">3.3.9. Device Time Synchronization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="source/4_Application_Guide/Depth_Settings.html">3.4. Depth Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Depth_Settings.html#preset-configuration">3.4.1. Preset Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Depth_Settings.html#set-depth-ae">3.4.2. Set Depth AE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Depth_Settings.html#set-depth-exposure-gain">3.4.3. Set Depth Exposure/Gain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Depth_Settings.html#set-min-and-max-depth">3.4.4. Set Min and Max Depth</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Depth_Settings.html#d2d-disparity-to-depth">3.4.5. D2D (Disparity to depth)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="source/4_Application_Guide/Depth_Settings.html#hardware-d2d">3.4.5.1. Hardware D2D</a></li>
+<li class="toctree-l4"><a class="reference internal" href="source/4_Application_Guide/Depth_Settings.html#software-d2d">3.4.5.2. Software D2D</a></li>
+<li class="toctree-l4"><a class="reference internal" href="source/4_Application_Guide/Depth_Settings.html#set-the-unit-of-depth">3.4.5.3. Set the Unit of Depth</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="source/4_Application_Guide/IR_Parameter_Settings.html">3.5. IR Parameter Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/IR_Parameter_Settings.html#set-ir-ae">3.5.1. Set IR AE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/IR_Parameter_Settings.html#set-ir-exposure-gain">3.5.2. Set IR Exposure/Gain</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="source/4_Application_Guide/Color_Parameter_Settings.html">3.6. Color Parameter Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Color_Parameter_Settings.html#set-color-ae">3.6.1. Set Color AE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Color_Parameter_Settings.html#set-color-exposure">3.6.2. Set Color Exposure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Color_Parameter_Settings.html#set-color-gain">3.6.3. Set Color Gain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Color_Parameter_Settings.html#set-color-auto-white-balance">3.6.4. Set Color Auto White Balance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Color_Parameter_Settings.html#set-color-white-balance-parameters">3.6.5. Set Color White Balance Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Color_Parameter_Settings.html#set-color-power-line-frequency">3.6.6. Set Color Power Line Frequency</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="source/4_Application_Guide/Post_Processing_Filter.html">3.7. Post-Processing Filter</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Post_Processing_Filter.html#sequenceidfilter">3.7.1. SequenceIdFilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Post_Processing_Filter.html#decimationfilter">3.7.2. DecimationFilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Post_Processing_Filter.html#thresholdfilter">3.7.3. ThresholdFilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Post_Processing_Filter.html#spatialadvancedfilter">3.7.4. SpatialAdvancedFilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Post_Processing_Filter.html#holefillingfilter">3.7.5. HoleFillingFilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Post_Processing_Filter.html#temporalfilter">3.7.6. TemporalFilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Post_Processing_Filter.html#disparitytransform">3.7.7. DisparityTransform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Post_Processing_Filter.html#filterfactory">3.7.8. FilterFactory</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="source/4_Application_Guide/Post_Processing_Filter.html#common-filter">3.7.8.1. Common filter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="source/4_Application_Guide/Post_Processing_Filter.html#private-filter">3.7.8.2. Private filter</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Post_Processing_Filter.html#sample-usage">3.7.9. Sample Usage</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="source/4_Application_Guide/Post_Processing_Filter.html#obtain-video-stream">3.7.9.1. Obtain Video Stream</a></li>
+<li class="toctree-l4"><a class="reference internal" href="source/4_Application_Guide/Post_Processing_Filter.html#printfiltersinfo-code">3.7.9.2. PrintFiltersInfo code</a></li>
+<li class="toctree-l4"><a class="reference internal" href="source/4_Application_Guide/Post_Processing_Filter.html#filtercontrol-code">3.7.9.3. FilterControl code</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="source/4_Application_Guide/HDR_Merge.html">3.8. HDR Merge</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/HDR_Merge.html#obtain-video-stream">3.8.1. Obtain Video Stream</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/HDR_Merge.html#set-hdr-config">3.8.2. Set Hdr Config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/HDR_Merge.html#hdr-merge-processing">3.8.3. HDR merge processing</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="source/license.html">4. License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">OrbbecSDK v2 C# Wrapper User's Guide</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">OrbbecSDK v2 C# Wrapper User’s Guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="orbbecsdk-v2-c-wrapper-user-s-guide">
+<h1>OrbbecSDK v2 C# Wrapper User’s Guide<a class="headerlink" href="#orbbecsdk-v2-c-wrapper-user-s-guide" title="Permalink to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="source/1_overview/overview.html">1. Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="source/1_overview/Introduction.html">1.1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source/1_overview/Support_platform.html">1.2. Support Platforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source/1_overview/Support_Hardware_Products.html">1.3. Support Hardware Products</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="source/2_installation/installation.html">2. Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="source/2_installation/Compilation.html">2.1. Windows C# SDK Compilation and Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="source/4_Application_Guide/Application_Guide.html">3. Application Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="source/4_Application_Guide/QuickStart.html">3.1. Build your First Camera Application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source/4_Application_Guide/Data_Stream_acquisition.html">3.2. Obtain Data Stream</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Data_Stream_acquisition.html#stream-profile">3.2.1. Stream Profile</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Data_Stream_acquisition.html#obtain-video-stream">3.2.2. Obtain Video Stream</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Data_Stream_acquisition.html#obtain-imu-data">3.2.3. Obtain IMU Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Data_Stream_acquisition.html#point-cloud">3.2.4. Point Cloud</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="source/4_Application_Guide/Camera_configuration.html">3.3. Camera Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Camera_configuration.html#obtain-the-serial-number">3.3.1. Obtain the Serial Number</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Camera_configuration.html#obtain-the-camera-intrinsic-and-extrinsic-parameters">3.3.2. Obtain the Camera Intrinsic and Extrinsic Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Camera_configuration.html#open-device">3.3.3. Open Device</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Camera_configuration.html#device-reboot">3.3.4. Device Reboot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Camera_configuration.html#laser-switch">3.3.5. Laser Switch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Camera_configuration.html#ldp-switch">3.3.6. LDP Switch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Camera_configuration.html#obtain-ldp-protection-measurements">3.3.7. Obtain LDP Protection Measurements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Camera_configuration.html#obtain-ldp-protection-status">3.3.8. Obtain LDP Protection Status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Camera_configuration.html#device-time-synchronization">3.3.9. Device Time Synchronization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="source/4_Application_Guide/Depth_Settings.html">3.4. Depth Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Depth_Settings.html#preset-configuration">3.4.1. Preset Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Depth_Settings.html#set-depth-ae">3.4.2. Set Depth AE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Depth_Settings.html#set-depth-exposure-gain">3.4.3. Set Depth Exposure/Gain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Depth_Settings.html#set-min-and-max-depth">3.4.4. Set Min and Max Depth</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Depth_Settings.html#d2d-disparity-to-depth">3.4.5. D2D (Disparity to depth)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="source/4_Application_Guide/IR_Parameter_Settings.html">3.5. IR Parameter Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/IR_Parameter_Settings.html#set-ir-ae">3.5.1. Set IR AE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/IR_Parameter_Settings.html#set-ir-exposure-gain">3.5.2. Set IR Exposure/Gain</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="source/4_Application_Guide/Color_Parameter_Settings.html">3.6. Color Parameter Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Color_Parameter_Settings.html#set-color-ae">3.6.1. Set Color AE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Color_Parameter_Settings.html#set-color-exposure">3.6.2. Set Color Exposure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Color_Parameter_Settings.html#set-color-gain">3.6.3. Set Color Gain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Color_Parameter_Settings.html#set-color-auto-white-balance">3.6.4. Set Color Auto White Balance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Color_Parameter_Settings.html#set-color-white-balance-parameters">3.6.5. Set Color White Balance Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Color_Parameter_Settings.html#set-color-power-line-frequency">3.6.6. Set Color Power Line Frequency</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="source/4_Application_Guide/Post_Processing_Filter.html">3.7. Post-Processing Filter</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Post_Processing_Filter.html#sequenceidfilter">3.7.1. SequenceIdFilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Post_Processing_Filter.html#decimationfilter">3.7.2. DecimationFilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Post_Processing_Filter.html#thresholdfilter">3.7.3. ThresholdFilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Post_Processing_Filter.html#spatialadvancedfilter">3.7.4. SpatialAdvancedFilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Post_Processing_Filter.html#holefillingfilter">3.7.5. HoleFillingFilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Post_Processing_Filter.html#temporalfilter">3.7.6. TemporalFilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Post_Processing_Filter.html#disparitytransform">3.7.7. DisparityTransform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Post_Processing_Filter.html#filterfactory">3.7.8. FilterFactory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/Post_Processing_Filter.html#sample-usage">3.7.9. Sample Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="source/4_Application_Guide/HDR_Merge.html">3.8. HDR Merge</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/HDR_Merge.html#obtain-video-stream">3.8.1. Obtain Video Stream</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/HDR_Merge.html#set-hdr-config">3.8.2. Set Hdr Config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/4_Application_Guide/HDR_Merge.html#hdr-merge-processing">3.8.3. HDR merge processing</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="source/license.html">4. License</a></li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="source/1_overview/overview.html" class="btn btn-neutral float-right" title="1. Overview" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, ORBBEC INC. www.orbbec.com..
+      <span class="lastupdated">Last updated on 2025-01-19 19:51:51.
+      </span></p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

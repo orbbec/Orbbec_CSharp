@@ -1,0 +1,304 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3.4. Depth Settings &mdash; OrbbecSDK v2 C# Wrapper User&#39;s Guide  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=a2eacb60" />
+
+  
+    <link rel="shortcut icon" href="../../_static/orbbec_footerlogo_3d_world.svg"/>
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=b3ba4146"></script>
+      <script src="../../_static/doctools.js?v=888ff710"></script>
+      <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="3.5. IR Parameter Settings" href="IR_Parameter_Settings.html" />
+    <link rel="prev" title="3.3. Camera Configuration" href="Camera_configuration.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            OrbbecSDK v2 C# Wrapper User's Guide
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../1_overview/overview.html">1. Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../1_overview/Introduction.html">1.1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../1_overview/Support_platform.html">1.2. Support Platforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../1_overview/Support_Hardware_Products.html">1.3. Support Hardware Products</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../2_installation/installation.html">2. Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../2_installation/Compilation.html">2.1. Windows C# SDK Compilation and Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="Application_Guide.html">3. Application Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="QuickStart.html">3.1. Build your First Camera Application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Data_Stream_acquisition.html">3.2. Obtain Data Stream</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Data_Stream_acquisition.html#stream-profile">3.2.1. Stream Profile</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Data_Stream_acquisition.html#obtain-video-stream">3.2.2. Obtain Video Stream</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Data_Stream_acquisition.html#obtain-imu-data">3.2.3. Obtain IMU Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Data_Stream_acquisition.html#point-cloud">3.2.4. Point Cloud</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="Data_Stream_acquisition.html#depth-point-cloud">3.2.4.1. Depth Point Cloud</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Data_Stream_acquisition.html#rgbd-point-cloud">3.2.4.2. RGBD Point Cloud</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Camera_configuration.html">3.3. Camera Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Camera_configuration.html#obtain-the-serial-number">3.3.1. Obtain the Serial Number</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Camera_configuration.html#obtain-the-camera-intrinsic-and-extrinsic-parameters">3.3.2. Obtain the Camera Intrinsic and Extrinsic Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Camera_configuration.html#open-device">3.3.3. Open Device</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Camera_configuration.html#device-reboot">3.3.4. Device Reboot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Camera_configuration.html#laser-switch">3.3.5. Laser Switch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Camera_configuration.html#ldp-switch">3.3.6. LDP Switch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Camera_configuration.html#obtain-ldp-protection-measurements">3.3.7. Obtain LDP Protection Measurements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Camera_configuration.html#obtain-ldp-protection-status">3.3.8. Obtain LDP Protection Status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Camera_configuration.html#device-time-synchronization">3.3.9. Device Time Synchronization</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">3.4. Depth Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#preset-configuration">3.4.1. Preset Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#set-depth-ae">3.4.2. Set Depth AE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#set-depth-exposure-gain">3.4.3. Set Depth Exposure/Gain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#set-min-and-max-depth">3.4.4. Set Min and Max Depth</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#d2d-disparity-to-depth">3.4.5. D2D (Disparity to depth)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#hardware-d2d">3.4.5.1. Hardware D2D</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#software-d2d">3.4.5.2. Software D2D</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#set-the-unit-of-depth">3.4.5.3. Set the Unit of Depth</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="IR_Parameter_Settings.html">3.5. IR Parameter Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="IR_Parameter_Settings.html#set-ir-ae">3.5.1. Set IR AE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="IR_Parameter_Settings.html#set-ir-exposure-gain">3.5.2. Set IR Exposure/Gain</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Color_Parameter_Settings.html">3.6. Color Parameter Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Color_Parameter_Settings.html#set-color-ae">3.6.1. Set Color AE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Color_Parameter_Settings.html#set-color-exposure">3.6.2. Set Color Exposure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Color_Parameter_Settings.html#set-color-gain">3.6.3. Set Color Gain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Color_Parameter_Settings.html#set-color-auto-white-balance">3.6.4. Set Color Auto White Balance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Color_Parameter_Settings.html#set-color-white-balance-parameters">3.6.5. Set Color White Balance Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Color_Parameter_Settings.html#set-color-power-line-frequency">3.6.6. Set Color Power Line Frequency</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Post_Processing_Filter.html">3.7. Post-Processing Filter</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Post_Processing_Filter.html#sequenceidfilter">3.7.1. SequenceIdFilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Post_Processing_Filter.html#decimationfilter">3.7.2. DecimationFilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Post_Processing_Filter.html#thresholdfilter">3.7.3. ThresholdFilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Post_Processing_Filter.html#spatialadvancedfilter">3.7.4. SpatialAdvancedFilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Post_Processing_Filter.html#holefillingfilter">3.7.5. HoleFillingFilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Post_Processing_Filter.html#temporalfilter">3.7.6. TemporalFilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Post_Processing_Filter.html#disparitytransform">3.7.7. DisparityTransform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Post_Processing_Filter.html#filterfactory">3.7.8. FilterFactory</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="Post_Processing_Filter.html#common-filter">3.7.8.1. Common filter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Post_Processing_Filter.html#private-filter">3.7.8.2. Private filter</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="Post_Processing_Filter.html#sample-usage">3.7.9. Sample Usage</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="Post_Processing_Filter.html#obtain-video-stream">3.7.9.1. Obtain Video Stream</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Post_Processing_Filter.html#printfiltersinfo-code">3.7.9.2. PrintFiltersInfo code</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Post_Processing_Filter.html#filtercontrol-code">3.7.9.3. FilterControl code</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="HDR_Merge.html">3.8. HDR Merge</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="HDR_Merge.html#obtain-video-stream">3.8.1. Obtain Video Stream</a></li>
+<li class="toctree-l3"><a class="reference internal" href="HDR_Merge.html#set-hdr-config">3.8.2. Set Hdr Config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="HDR_Merge.html#hdr-merge-processing">3.8.3. HDR merge processing</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">4. License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">OrbbecSDK v2 C# Wrapper User's Guide</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="Application_Guide.html"><span class="section-number">3. </span>Application Guide</a></li>
+      <li class="breadcrumb-item active"><span class="section-number">3.4. </span>Depth Settings</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/source/4_Application_Guide/Depth_Settings.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="depth-settings">
+<h1><span class="section-number">3.4. </span>Depth Settings<a class="headerlink" href="#depth-settings" title="Permalink to this heading"></a></h1>
+<section id="preset-configuration">
+<h2><span class="section-number">3.4.1. </span>Preset Configuration<a class="headerlink" href="#preset-configuration" title="Permalink to this heading"></a></h2>
+<p>Gemini 330 series 3D cameras have built-in a variety of predefined Presets. For the specific application scenarios of 3D cameras, users can use the Orbbec Viewer tool to select the best Presets.</p>
+<p>The method of loading the preset is as follows:</p>
+<div class="highlight-c# notranslate"><div class="highlight"><pre><span></span><span class="n">Pipeline</span><span class="w"> </span><span class="n">pipeline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Pipeline</span><span class="p">();</span>
+<span class="n">Device</span><span class="w"> </span><span class="n">device</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pipeline</span><span class="p">.</span><span class="n">GetDevice</span><span class="p">();</span>
+<span class="n">device</span><span class="p">.</span><span class="n">LoadPreset</span><span class="p">(</span><span class="s">&quot;Default&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="set-depth-ae">
+<h2><span class="section-number">3.4.2. </span>Set Depth AE<a class="headerlink" href="#set-depth-ae" title="Permalink to this heading"></a></h2>
+<div class="highlight-c# notranslate"><div class="highlight"><pre><span></span><span class="n">Pipeline</span><span class="w"> </span><span class="n">pipeline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Pipeline</span><span class="p">();</span>
+<span class="n">Device</span><span class="w"> </span><span class="n">device</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pipeline</span><span class="p">.</span><span class="n">GetDevice</span><span class="p">();</span>
+<span class="c1">// True open depth AE， False: close depth AE</span>
+<span class="n">device</span><span class="p">.</span><span class="n">SetBoolProperty</span><span class="p">(</span><span class="n">PropertyId</span><span class="p">.</span><span class="n">OB_PROP_DEPTH_AUTO_EXPOSURE_BOOL</span><span class="p">,</span><span class="w"> </span><span class="k">true</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="set-depth-exposure-gain">
+<h2><span class="section-number">3.4.3. </span>Set Depth Exposure/Gain<a class="headerlink" href="#set-depth-exposure-gain" title="Permalink to this heading"></a></h2>
+<div class="highlight-c# notranslate"><div class="highlight"><pre><span></span><span class="n">Pipeline</span><span class="w"> </span><span class="n">pipeline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Pipeline</span><span class="p">();</span>
+<span class="n">Device</span><span class="w"> </span><span class="n">device</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pipeline</span><span class="p">.</span><span class="n">GetDevice</span><span class="p">();</span>
+<span class="c1">// Close IR AE</span>
+<span class="n">device</span><span class="p">.</span><span class="n">SetBoolProperty</span><span class="p">(</span><span class="n">PropertyId</span><span class="p">.</span><span class="n">OB_PROP_DEPTH_AUTO_EXPOSURE_BOOL</span><span class="p">,</span><span class="w"> </span><span class="k">false</span><span class="p">);</span>
+<span class="c1">// set IR exposure</span>
+<span class="n">device</span><span class="p">.</span><span class="n">SetIntProperty</span><span class="p">(</span><span class="n">PropertyId</span><span class="p">.</span><span class="n">OB_PROP_DEPTH_EXPOSURE_INT</span><span class="p">,</span><span class="w"> </span><span class="m">100</span><span class="p">);</span>
+<span class="c1">// set IR gain</span>
+<span class="n">device</span><span class="p">.</span><span class="n">SetIntProperty</span><span class="p">(</span><span class="n">PropertyId</span><span class="p">.</span><span class="n">OB_PROP_DEPTH_GAIN_INT</span><span class="p">,</span><span class="w"> </span><span class="m">64</span><span class="p">);</span><span class="w"> </span>
+</pre></div>
+</div>
+</section>
+<section id="set-min-and-max-depth">
+<h2><span class="section-number">3.4.4. </span>Set Min and Max Depth<a class="headerlink" href="#set-min-and-max-depth" title="Permalink to this heading"></a></h2>
+<p>Set the min and max values of Depth, and all Depth outside this range will be set to 0.</p>
+<ul class="simple">
+<li><p>Notes: For the Gemini 330 series, max and min depth values are set through post-processing with the ThresholdFilter, as follows:</p></li>
+</ul>
+<div class="highlight-c# notranslate"><div class="highlight"><pre><span></span><span class="c1">// create threshold filter</span>
+<span class="n">ThresholdFilter</span><span class="w"> </span><span class="n">filter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ThresholdFilter</span><span class="p">();</span>
+<span class="c1">// set min and max depth,unit: mm</span>
+<span class="n">filter</span><span class="p">.</span><span class="n">SetValueRange</span><span class="p">(</span><span class="m">100</span><span class="p">,</span><span class="w"> </span><span class="m">1000</span><span class="p">);</span>
+<span class="c1">// get depth frame</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">frames</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pipeline</span><span class="p">.</span><span class="n">WaitForFrames</span><span class="p">(</span><span class="m">100</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">depthFrame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">frames</span><span class="o">?.</span><span class="n">GetDepthFrame</span><span class="p">();</span>
+<span class="c1">// call threshold filter</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">newDepthFrame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">filter</span><span class="p">.</span><span class="n">Process</span><span class="p">(</span><span class="n">depthFrame</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="d2d-disparity-to-depth">
+<h2><span class="section-number">3.4.5. </span>D2D (Disparity to depth)<a class="headerlink" href="#d2d-disparity-to-depth" title="Permalink to this heading"></a></h2>
+<p>Disparity to depth is an image processing technique used to convert disparity information into depth information.</p>
+<section id="hardware-d2d">
+<h3><span class="section-number">3.4.5.1. </span>Hardware D2D<a class="headerlink" href="#hardware-d2d" title="Permalink to this heading"></a></h3>
+<p>Hardware D2D refers to disparity-to-depth conversion implemented internally within the device. Devices such as the Gemini 330 series, Gemini 2, Gemini 2 L, Astra 2 support this feature.</p>
+<div class="highlight-c# notranslate"><div class="highlight"><pre><span></span><span class="n">Pipeline</span><span class="w"> </span><span class="n">pipeline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Pipeline</span><span class="p">();</span>
+<span class="n">Device</span><span class="w"> </span><span class="n">device</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pipeline</span><span class="p">.</span><span class="n">GetDevice</span><span class="p">();</span>
+<span class="c1">// Parameters: True to turn on hardware D2D, False to turn off hardware D2D</span>
+<span class="n">device</span><span class="p">.</span><span class="n">SetBoolProperty</span><span class="p">(</span><span class="n">PropertyId</span><span class="p">.</span><span class="n">OB_PROP_DISPARITY_TO_DEPTH_BOOL</span><span class="p">,</span><span class="w"> </span><span class="k">true</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="software-d2d">
+<h3><span class="section-number">3.4.5.2. </span>Software D2D<a class="headerlink" href="#software-d2d" title="Permalink to this heading"></a></h3>
+<p>Software D2D refers to disparity-to-depth conversion implemented within the SDK. All devices support Software D2D except for TOF devices like Femto Mega and Femto Bolt.</p>
+<div class="highlight-c# notranslate"><div class="highlight"><pre><span></span><span class="n">Pipeline</span><span class="w"> </span><span class="n">pipeline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Pipeline</span><span class="p">();</span>
+<span class="n">Device</span><span class="w"> </span><span class="n">device</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pipeline</span><span class="p">.</span><span class="n">GetDevice</span><span class="p">();</span>
+<span class="c1">// Parameters: True to turn on Software D2D, False to turn off Software D2D</span>
+<span class="n">device</span><span class="p">.</span><span class="n">SetBoolProperty</span><span class="p">(</span><span class="n">PropertyId</span><span class="p">.</span><span class="n">OB_PROP_SDK_DISPARITY_TO_DEPTH_BOOL</span><span class="p">,</span><span class="w"> </span><span class="k">true</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="set-the-unit-of-depth">
+<h3><span class="section-number">3.4.5.3. </span>Set the Unit of Depth<a class="headerlink" href="#set-the-unit-of-depth" title="Permalink to this heading"></a></h3>
+<p>The precision of depth measurements is determined by the unit of pixel values in the depth data frame. By adjusting the depth unit, the accuracy of depth measurements can be modified. For instance, if the unit is set to 0.2mm, an object at a distance of 1000mm will have a pixel value of 5000 in the output depth data frame (as 5000 multiplied by 0.2mm equals 1000mm). Similarly, if the unit is set to 0.1mm, the pixel value will be 10000.</p>
+<p>Gemini 2/2L, Astra 2,Gemini 330 series support the setting of Depth units. Gemini 2/2L sets the Depth unit as follows:</p>
+<p>Among them:
+DepthPrecisionLevel.OB_PRECISION_1MM:    &lt; 1mm</p>
+<p>DepthPrecisionLevel.OB_PRECISION_0MM8:   &lt; 0.8mm</p>
+<p>DepthPrecisionLevel.OB_PRECISION_0MM4:   &lt; 0.4mm</p>
+<p>DepthPrecisionLevel.OB_PRECISION_0MM1:   &lt; 0.1mm</p>
+<p>DepthPrecisionLevel.OB_PRECISION_0MM2:   &lt; 0.2mm</p>
+<p>DepthPrecisionLevel.OB_PRECISION_0MM5:   &lt; 0.5mm</p>
+<p>DepthPrecisionLevel.OB_PRECISION_0MM05:  &lt; 0.05mm</p>
+<div class="highlight-c# notranslate"><div class="highlight"><pre><span></span><span class="n">Pipeline</span><span class="w"> </span><span class="n">pipeline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Pipeline</span><span class="p">();</span>
+<span class="n">Device</span><span class="w"> </span><span class="n">device</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pipeline</span><span class="p">.</span><span class="n">GetDevice</span><span class="p">();</span>
+<span class="c1">// Parameters: True to turn on Software D2D, False to turn off Software D2D</span>
+<span class="n">device</span><span class="p">.</span><span class="n">SetIntProperty</span><span class="p">(</span><span class="n">PropertyId</span><span class="p">.</span><span class="n">OB_PROP_DEPTH_PRECISION_LEVEL_INT</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">DepthPrecisionLevel</span><span class="p">.</span><span class="n">OB_PRECISION_1MM</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The Gemini 330 series supports setting the Depth unit as follows:</p>
+<div class="highlight-c# notranslate"><div class="highlight"><pre><span></span><span class="n">Pipeline</span><span class="w"> </span><span class="n">pipeline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Pipeline</span><span class="p">();</span>
+<span class="n">Device</span><span class="w"> </span><span class="n">device</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pipeline</span><span class="p">.</span><span class="n">GetDevice</span><span class="p">();</span>
+<span class="c1">// Parameters: True to turn on Software D2D, False to turn off Software D2D</span>
+<span class="n">device</span><span class="p">.</span><span class="n">SetFloatProperty</span><span class="p">(</span><span class="n">PropertyId</span><span class="p">.</span><span class="n">OB_PROP_DEPTH_UNIT_FLEXIBLE_ADJUSTMENT_FLOAT</span><span class="p">,</span><span class="w"> </span><span class="m">0.1f</span><span class="p">);</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Notes: The Gemini 330 series Depth unit supports setting arbitrary units, with the parameter as a float.</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Camera_configuration.html" class="btn btn-neutral float-left" title="3.3. Camera Configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="IR_Parameter_Settings.html" class="btn btn-neutral float-right" title="3.5. IR Parameter Settings" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, ORBBEC INC. www.orbbec.com..
+      <span class="lastupdated">Last updated on 2025-01-19 19:51:51.
+      </span></p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

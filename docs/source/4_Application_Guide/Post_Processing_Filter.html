@@ -1,0 +1,527 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3.7. Post-Processing Filter &mdash; OrbbecSDK v2 C# Wrapper User&#39;s Guide  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=a2eacb60" />
+
+  
+    <link rel="shortcut icon" href="../../_static/orbbec_footerlogo_3d_world.svg"/>
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=b3ba4146"></script>
+      <script src="../../_static/doctools.js?v=888ff710"></script>
+      <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="3.8. HDR Merge" href="HDR_Merge.html" />
+    <link rel="prev" title="3.6. Color Parameter Settings" href="Color_Parameter_Settings.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            OrbbecSDK v2 C# Wrapper User's Guide
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../1_overview/overview.html">1. Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../1_overview/Introduction.html">1.1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../1_overview/Support_platform.html">1.2. Support Platforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../1_overview/Support_Hardware_Products.html">1.3. Support Hardware Products</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../2_installation/installation.html">2. Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../2_installation/Compilation.html">2.1. Windows C# SDK Compilation and Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="Application_Guide.html">3. Application Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="QuickStart.html">3.1. Build your First Camera Application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Data_Stream_acquisition.html">3.2. Obtain Data Stream</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Data_Stream_acquisition.html#stream-profile">3.2.1. Stream Profile</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Data_Stream_acquisition.html#obtain-video-stream">3.2.2. Obtain Video Stream</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Data_Stream_acquisition.html#obtain-imu-data">3.2.3. Obtain IMU Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Data_Stream_acquisition.html#point-cloud">3.2.4. Point Cloud</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="Data_Stream_acquisition.html#depth-point-cloud">3.2.4.1. Depth Point Cloud</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Data_Stream_acquisition.html#rgbd-point-cloud">3.2.4.2. RGBD Point Cloud</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Camera_configuration.html">3.3. Camera Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Camera_configuration.html#obtain-the-serial-number">3.3.1. Obtain the Serial Number</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Camera_configuration.html#obtain-the-camera-intrinsic-and-extrinsic-parameters">3.3.2. Obtain the Camera Intrinsic and Extrinsic Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Camera_configuration.html#open-device">3.3.3. Open Device</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Camera_configuration.html#device-reboot">3.3.4. Device Reboot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Camera_configuration.html#laser-switch">3.3.5. Laser Switch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Camera_configuration.html#ldp-switch">3.3.6. LDP Switch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Camera_configuration.html#obtain-ldp-protection-measurements">3.3.7. Obtain LDP Protection Measurements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Camera_configuration.html#obtain-ldp-protection-status">3.3.8. Obtain LDP Protection Status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Camera_configuration.html#device-time-synchronization">3.3.9. Device Time Synchronization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Depth_Settings.html">3.4. Depth Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Depth_Settings.html#preset-configuration">3.4.1. Preset Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Depth_Settings.html#set-depth-ae">3.4.2. Set Depth AE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Depth_Settings.html#set-depth-exposure-gain">3.4.3. Set Depth Exposure/Gain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Depth_Settings.html#set-min-and-max-depth">3.4.4. Set Min and Max Depth</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Depth_Settings.html#d2d-disparity-to-depth">3.4.5. D2D (Disparity to depth)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="Depth_Settings.html#hardware-d2d">3.4.5.1. Hardware D2D</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Depth_Settings.html#software-d2d">3.4.5.2. Software D2D</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Depth_Settings.html#set-the-unit-of-depth">3.4.5.3. Set the Unit of Depth</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="IR_Parameter_Settings.html">3.5. IR Parameter Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="IR_Parameter_Settings.html#set-ir-ae">3.5.1. Set IR AE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="IR_Parameter_Settings.html#set-ir-exposure-gain">3.5.2. Set IR Exposure/Gain</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Color_Parameter_Settings.html">3.6. Color Parameter Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Color_Parameter_Settings.html#set-color-ae">3.6.1. Set Color AE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Color_Parameter_Settings.html#set-color-exposure">3.6.2. Set Color Exposure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Color_Parameter_Settings.html#set-color-gain">3.6.3. Set Color Gain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Color_Parameter_Settings.html#set-color-auto-white-balance">3.6.4. Set Color Auto White Balance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Color_Parameter_Settings.html#set-color-white-balance-parameters">3.6.5. Set Color White Balance Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Color_Parameter_Settings.html#set-color-power-line-frequency">3.6.6. Set Color Power Line Frequency</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">3.7. Post-Processing Filter</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#sequenceidfilter">3.7.1. SequenceIdFilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#decimationfilter">3.7.2. DecimationFilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#thresholdfilter">3.7.3. ThresholdFilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#spatialadvancedfilter">3.7.4. SpatialAdvancedFilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#holefillingfilter">3.7.5. HoleFillingFilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#temporalfilter">3.7.6. TemporalFilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#disparitytransform">3.7.7. DisparityTransform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#filterfactory">3.7.8. FilterFactory</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#common-filter">3.7.8.1. Common filter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#private-filter">3.7.8.2. Private filter</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#sample-usage">3.7.9. Sample Usage</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#obtain-video-stream">3.7.9.1. Obtain Video Stream</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#printfiltersinfo-code">3.7.9.2. PrintFiltersInfo code</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#filtercontrol-code">3.7.9.3. FilterControl code</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="HDR_Merge.html">3.8. HDR Merge</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="HDR_Merge.html#obtain-video-stream">3.8.1. Obtain Video Stream</a></li>
+<li class="toctree-l3"><a class="reference internal" href="HDR_Merge.html#set-hdr-config">3.8.2. Set Hdr Config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="HDR_Merge.html#hdr-merge-processing">3.8.3. HDR merge processing</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">4. License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">OrbbecSDK v2 C# Wrapper User's Guide</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="Application_Guide.html"><span class="section-number">3. </span>Application Guide</a></li>
+      <li class="breadcrumb-item active"><span class="section-number">3.7. </span>Post-Processing Filter</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/source/4_Application_Guide/Post_Processing_Filter.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="post-processing-filter">
+<h1><span class="section-number">3.7. </span>Post-Processing Filter<a class="headerlink" href="#post-processing-filter" title="Permalink to this heading"></a></h1>
+<section id="sequenceidfilter">
+<h2><span class="section-number">3.7.1. </span>SequenceIdFilter<a class="headerlink" href="#sequenceidfilter" title="Permalink to this heading"></a></h2>
+<div class="highlight-c# notranslate"><div class="highlight"><pre><span></span><span class="c1">// create pipeline</span>
+<span class="n">Pipeline</span><span class="w"> </span><span class="n">pipeline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Pipeline</span><span class="p">();</span>
+<span class="n">Config</span><span class="w"> </span><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Config</span><span class="p">();</span>
+<span class="n">config</span><span class="p">.</span><span class="n">EnableStream</span><span class="p">(</span><span class="n">StreamType</span><span class="p">.</span><span class="n">OB_STREAM_DEPTH</span><span class="p">);</span>
+<span class="n">pipeline</span><span class="p">.</span><span class="n">Start</span><span class="p">(</span><span class="n">config</span><span class="p">);</span>
+<span class="c1">// create filter</span>
+<span class="n">SequenceIdFilter</span><span class="w"> </span><span class="n">filter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">SequenceIdFilter</span><span class="p">();</span>
+<span class="c1">// process frame</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">frames</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pipeline</span><span class="p">.</span><span class="n">WaitForFrames</span><span class="p">(</span><span class="m">100</span><span class="p">)</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">depthFrame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">frames</span><span class="o">?.</span><span class="n">GetDepthFrame</span><span class="p">();</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">depthFrame</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="k">null</span><span class="p">)</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">processedFrame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">depthFrame</span><span class="p">;</span>
+<span class="c1">// set param，for example, set the frame sequence number to 1</span>
+<span class="n">filter</span><span class="p">.</span><span class="n">selectSequenceId</span><span class="p">(</span><span class="m">1</span><span class="p">);</span>
+<span class="c1">// The processed result</span>
+<span class="n">processedFrame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">filter</span><span class="p">.</span><span class="n">Process</span><span class="p">(</span><span class="n">processedFrame</span><span class="p">).</span><span class="n">As</span><span class="o">&lt;</span><span class="n">DepthFrame</span><span class="o">&gt;</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>The complete sample code can be found in /OrbbecSDK_CSharp/samples/4.post.processing.SequenceIdFilter</p>
+</section>
+<section id="decimationfilter">
+<h2><span class="section-number">3.7.2. </span>DecimationFilter<a class="headerlink" href="#decimationfilter" title="Permalink to this heading"></a></h2>
+<div class="highlight-c# notranslate"><div class="highlight"><pre><span></span><span class="c1">// create pipeline</span>
+<span class="n">Pipeline</span><span class="w"> </span><span class="n">pipeline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Pipeline</span><span class="p">();</span>
+<span class="n">Config</span><span class="w"> </span><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Config</span><span class="p">();</span>
+<span class="n">config</span><span class="p">.</span><span class="n">EnableStream</span><span class="p">(</span><span class="n">StreamType</span><span class="p">.</span><span class="n">OB_STREAM_DEPTH</span><span class="p">);</span>
+<span class="n">pipeline</span><span class="p">.</span><span class="n">Start</span><span class="p">(</span><span class="n">config</span><span class="p">);</span>
+<span class="c1">// create filter</span>
+<span class="n">DecimationFilter</span><span class="w"> </span><span class="n">filter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">DecimationFilter</span><span class="p">();</span>
+<span class="c1">// process frame</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">frames</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pipeline</span><span class="p">.</span><span class="n">WaitForFrames</span><span class="p">(</span><span class="m">100</span><span class="p">)</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">depthFrame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">frames</span><span class="o">?.</span><span class="n">GetDepthFrame</span><span class="p">();</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">depthFrame</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="k">null</span><span class="p">)</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">processedFrame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">depthFrame</span><span class="p">;</span>
+<span class="c1">// set param,for example, set the image size to be reduced by a factor of 2</span>
+<span class="n">filter</span><span class="p">.</span><span class="n">setScaleValue</span><span class="p">(</span><span class="m">2</span><span class="p">);</span>
+<span class="c1">// The processed result</span>
+<span class="n">processedFrame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">filter</span><span class="p">.</span><span class="n">Process</span><span class="p">(</span><span class="n">processedFrame</span><span class="p">).</span><span class="n">As</span><span class="o">&lt;</span><span class="n">DepthFrame</span><span class="o">&gt;</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>The complete sample code can be found in /OrbbecSDK_CSharp/samples/4.post.processing.DecimationFilter</p>
+</section>
+<section id="thresholdfilter">
+<h2><span class="section-number">3.7.3. </span>ThresholdFilter<a class="headerlink" href="#thresholdfilter" title="Permalink to this heading"></a></h2>
+<div class="highlight-c# notranslate"><div class="highlight"><pre><span></span><span class="c1">// create pipeline</span>
+<span class="n">Pipeline</span><span class="w"> </span><span class="n">pipeline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Pipeline</span><span class="p">();</span>
+<span class="n">Config</span><span class="w"> </span><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Config</span><span class="p">();</span>
+<span class="n">config</span><span class="p">.</span><span class="n">EnableStream</span><span class="p">(</span><span class="n">StreamType</span><span class="p">.</span><span class="n">OB_STREAM_DEPTH</span><span class="p">);</span>
+<span class="n">pipeline</span><span class="p">.</span><span class="n">Start</span><span class="p">(</span><span class="n">config</span><span class="p">);</span>
+<span class="c1">// create filter</span>
+<span class="n">ThresholdFilter</span><span class="w"> </span><span class="n">filter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ThresholdFilter</span><span class="p">();</span>
+<span class="c1">// Processes a frame synchronously.</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">frames</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pipeline</span><span class="p">.</span><span class="n">WaitForFrames</span><span class="p">(</span><span class="m">100</span><span class="p">)</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">depthFrame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">frames</span><span class="o">?.</span><span class="n">GetDepthFrame</span><span class="p">();</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">depthFrame</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="k">null</span><span class="p">)</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">processedFrame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">depthFrame</span><span class="p">;</span>
+<span class="c1">// Set the thresholds to a minimum value of 500 and a maximum value of 1000</span>
+<span class="n">filter</span><span class="p">.</span><span class="n">setValueRange</span><span class="p">(</span><span class="m">500</span><span class="p">,</span><span class="m">1000</span><span class="p">);</span>
+<span class="c1">// The processed result</span>
+<span class="n">processedFrame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">filter</span><span class="p">.</span><span class="n">Process</span><span class="p">(</span><span class="n">processedFrame</span><span class="p">).</span><span class="n">As</span><span class="o">&lt;</span><span class="n">DepthFrame</span><span class="o">&gt;</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>The complete sample code can be found in /OrbbecSDK_CSharp/samples/4.post.processing.ThresholdFilter</p>
+</section>
+<section id="spatialadvancedfilter">
+<h2><span class="section-number">3.7.4. </span>SpatialAdvancedFilter<a class="headerlink" href="#spatialadvancedfilter" title="Permalink to this heading"></a></h2>
+<div class="highlight-c# notranslate"><div class="highlight"><pre><span></span><span class="c1">// create pipeline</span>
+<span class="n">Pipeline</span><span class="w"> </span><span class="n">pipeline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Pipeline</span><span class="p">();</span>
+<span class="n">Device</span><span class="w"> </span><span class="n">device</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pipeline</span><span class="p">.</span><span class="n">GetDevice</span><span class="p">();</span><span class="w">              </span>
+<span class="n">device</span><span class="p">.</span><span class="n">SetBoolProperty</span><span class="p">(</span><span class="n">PropertyId</span><span class="p">.</span><span class="n">OB_PROP_DEPTH_SOFT_FILTER_BOOL</span><span class="p">,</span><span class="w"> </span><span class="k">false</span><span class="p">);</span>
+<span class="n">Config</span><span class="w"> </span><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Config</span><span class="p">();</span>
+<span class="n">config</span><span class="p">.</span><span class="n">EnableStream</span><span class="p">(</span><span class="n">StreamType</span><span class="p">.</span><span class="n">OB_STREAM_DEPTH</span><span class="p">);</span>
+<span class="n">pipeline</span><span class="p">.</span><span class="n">Start</span><span class="p">(</span><span class="n">config</span><span class="p">);</span>
+<span class="c1">// Disable default software filters，This property must be set</span>
+<span class="n">device</span><span class="p">.</span><span class="n">SetBoolProperty</span><span class="p">(</span><span class="n">PropertyId</span><span class="p">.</span><span class="n">OB_PROP_DEPTH_SOFT_FILTER_BOOL</span><span class="p">,</span><span class="w"> </span><span class="k">false</span><span class="p">);</span>
+<span class="c1">// create filter</span>
+<span class="n">SpatialAdvancedFilter</span><span class="w"> </span><span class="n">filter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">SpatialAdvancedFilter</span><span class="p">();</span>
+<span class="c1">// Processes a frame synchronously.</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">frames</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pipeline</span><span class="p">.</span><span class="n">WaitForFrames</span><span class="p">(</span><span class="m">100</span><span class="p">)</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">depthFrame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">frames</span><span class="o">?.</span><span class="n">GetDepthFrame</span><span class="p">();</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">depthFrame</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="k">null</span><span class="p">)</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">processedFrame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">depthFrame</span><span class="p">;</span>
+<span class="c1">// Set the filter params,SpatialAdvancedFilterParams is defined in the source code Filter.cs</span>
+<span class="n">SpatialAdvancedFilterParams</span><span class="w"> </span><span class="n">filterParams</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">SpatialAdvancedFilterParams</span><span class="p">{</span>
+<span class="w">  </span><span class="n">magnitude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">,</span>
+<span class="w">  </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.5f</span><span class="p">,</span>
+<span class="w">  </span><span class="n">disp_diff</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">160</span><span class="p">,</span>
+<span class="w">  </span><span class="n">radius</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">};</span>
+<span class="n">filter</span><span class="p">.</span><span class="n">setFilterParams</span><span class="p">(</span><span class="k">in</span><span class="w"> </span><span class="n">filterParams</span><span class="p">);</span>
+<span class="c1">// The processed result</span>
+<span class="n">processedFrame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">filter</span><span class="p">.</span><span class="n">Process</span><span class="p">(</span><span class="n">processedFrame</span><span class="p">).</span><span class="n">As</span><span class="o">&lt;</span><span class="n">DepthFrame</span><span class="o">&gt;</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>The complete sample code can be found in /OrbbecSDK_CSharp/samples/4.post.processing.SpatialAdvancedFilter,The SpatialAdvancedFilter algorithm depends on the extensions library ,as shown
+<img alt="compile-10.png" src="../../_images/compile-10.png" /></p>
+</section>
+<section id="holefillingfilter">
+<h2><span class="section-number">3.7.5. </span>HoleFillingFilter<a class="headerlink" href="#holefillingfilter" title="Permalink to this heading"></a></h2>
+<div class="highlight-c# notranslate"><div class="highlight"><pre><span></span><span class="c1">// create pipeline</span>
+<span class="n">Pipeline</span><span class="w"> </span><span class="n">pipeline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Pipeline</span><span class="p">();</span>
+<span class="n">Device</span><span class="w"> </span><span class="n">device</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pipeline</span><span class="p">.</span><span class="n">GetDevice</span><span class="p">();</span><span class="w">              </span>
+<span class="n">device</span><span class="p">.</span><span class="n">SetBoolProperty</span><span class="p">(</span><span class="n">PropertyId</span><span class="p">.</span><span class="n">OB_PROP_DEPTH_SOFT_FILTER_BOOL</span><span class="p">,</span><span class="w"> </span><span class="k">false</span><span class="p">);</span>
+<span class="n">Config</span><span class="w"> </span><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Config</span><span class="p">();</span>
+<span class="n">config</span><span class="p">.</span><span class="n">EnableStream</span><span class="p">(</span><span class="n">StreamType</span><span class="p">.</span><span class="n">OB_STREAM_DEPTH</span><span class="p">);</span>
+<span class="n">pipeline</span><span class="p">.</span><span class="n">Start</span><span class="p">(</span><span class="n">config</span><span class="p">);</span>
+<span class="c1">// Disable default software filters，This property must be set</span>
+<span class="n">device</span><span class="p">.</span><span class="n">SetBoolProperty</span><span class="p">(</span><span class="n">PropertyId</span><span class="p">.</span><span class="n">OB_PROP_DEPTH_SOFT_FILTER_BOOL</span><span class="p">,</span><span class="w"> </span><span class="k">false</span><span class="p">);</span>
+<span class="c1">// create filter</span>
+<span class="n">HoleFillingFilter</span><span class="w"> </span><span class="n">filter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">HoleFillingFilter</span><span class="p">();</span>
+<span class="c1">// Processes a frame synchronously.</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">frames</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pipeline</span><span class="p">.</span><span class="n">WaitForFrames</span><span class="p">(</span><span class="m">100</span><span class="p">)</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">depthFrame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">frames</span><span class="o">?.</span><span class="n">GetDepthFrame</span><span class="p">();</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">depthFrame</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="k">null</span><span class="p">)</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">processedFrame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">depthFrame</span><span class="p">;</span>
+<span class="c1">// Set the filter params,HoleFillingMode is defined in the source code Filter.cs</span>
+<span class="n">HoleFillingMode</span><span class="w"> </span><span class="n">mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HoleFillingMode</span><span class="p">.</span><span class="n">OB_HOLE_FILL_NEAREST</span><span class="p">;</span>
+<span class="n">filter</span><span class="p">.</span><span class="n">setFilterMode</span><span class="p">(</span><span class="n">mode</span><span class="p">);</span>
+<span class="c1">// The processed result</span>
+<span class="n">processedFrame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">filter</span><span class="p">.</span><span class="n">Process</span><span class="p">(</span><span class="n">processedFrame</span><span class="p">).</span><span class="n">As</span><span class="o">&lt;</span><span class="n">DepthFrame</span><span class="o">&gt;</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>The complete sample code can be found in /OrbbecSDK_CSharp/samples/4.post.processing.HoleFillingFilter,The HoleFillingFilter algorithm depends on the extensions library ,The extension library is the same as SpatialAdvancedFilter.</p>
+</section>
+<section id="temporalfilter">
+<h2><span class="section-number">3.7.6. </span>TemporalFilter<a class="headerlink" href="#temporalfilter" title="Permalink to this heading"></a></h2>
+<div class="highlight-c# notranslate"><div class="highlight"><pre><span></span><span class="c1">// create pipeline</span>
+<span class="n">Pipeline</span><span class="w"> </span><span class="n">pipeline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Pipeline</span><span class="p">();</span>
+<span class="n">Device</span><span class="w"> </span><span class="n">device</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pipeline</span><span class="p">.</span><span class="n">GetDevice</span><span class="p">();</span><span class="w">              </span>
+<span class="n">device</span><span class="p">.</span><span class="n">SetBoolProperty</span><span class="p">(</span><span class="n">PropertyId</span><span class="p">.</span><span class="n">OB_PROP_DEPTH_SOFT_FILTER_BOOL</span><span class="p">,</span><span class="w"> </span><span class="k">false</span><span class="p">);</span>
+<span class="n">Config</span><span class="w"> </span><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Config</span><span class="p">();</span>
+<span class="n">config</span><span class="p">.</span><span class="n">EnableStream</span><span class="p">(</span><span class="n">StreamType</span><span class="p">.</span><span class="n">OB_STREAM_DEPTH</span><span class="p">);</span>
+<span class="n">pipeline</span><span class="p">.</span><span class="n">Start</span><span class="p">(</span><span class="n">config</span><span class="p">);</span>
+<span class="c1">// Disable default software filters，This property must be set</span>
+<span class="n">device</span><span class="p">.</span><span class="n">SetBoolProperty</span><span class="p">(</span><span class="n">PropertyId</span><span class="p">.</span><span class="n">OB_PROP_DEPTH_SOFT_FILTER_BOOL</span><span class="p">,</span><span class="w"> </span><span class="k">false</span><span class="p">);</span>
+<span class="c1">// create filter</span>
+<span class="n">TemporalFilter</span><span class="w"> </span><span class="n">filter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">TemporalFilter</span><span class="p">();</span>
+<span class="c1">// Processes a frame synchronously.</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">frames</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pipeline</span><span class="p">.</span><span class="n">WaitForFrames</span><span class="p">(</span><span class="m">100</span><span class="p">)</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">depthFrame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">frames</span><span class="o">?.</span><span class="n">GetDepthFrame</span><span class="p">();</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">depthFrame</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="k">null</span><span class="p">)</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">processedFrame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">depthFrame</span><span class="p">;</span>
+<span class="c1">// Set the filter params</span>
+<span class="n">filter</span><span class="p">.</span><span class="n">setDiffScale</span><span class="p">(</span><span class="m">0.1f</span><span class="p">);</span>
+<span class="n">filter</span><span class="p">.</span><span class="n">setWeight</span><span class="p">(</span><span class="m">0.4f</span><span class="p">);</span>
+<span class="c1">// The processed result</span>
+<span class="n">processedFrame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">filter</span><span class="p">.</span><span class="n">Process</span><span class="p">(</span><span class="n">processedFrame</span><span class="p">).</span><span class="n">As</span><span class="o">&lt;</span><span class="n">DepthFrame</span><span class="o">&gt;</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>The complete sample code can be found in /OrbbecSDK_CSharp/samples/4.post.processing.TemporalFilter,The TemporalFilter algorithm depends on the extensions library ,The extension library is the same as SpatialAdvancedFilter.</p>
+</section>
+<section id="disparitytransform">
+<h2><span class="section-number">3.7.7. </span>DisparityTransform<a class="headerlink" href="#disparitytransform" title="Permalink to this heading"></a></h2>
+<div class="highlight-c# notranslate"><div class="highlight"><pre><span></span><span class="c1">// create pipeline</span>
+<span class="n">Pipeline</span><span class="w"> </span><span class="n">pipeline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Pipeline</span><span class="p">();</span>
+<span class="n">Device</span><span class="w"> </span><span class="n">device</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pipeline</span><span class="p">.</span><span class="n">GetDevice</span><span class="p">();</span><span class="w">              </span>
+<span class="n">device</span><span class="p">.</span><span class="n">SetBoolProperty</span><span class="p">(</span><span class="n">PropertyId</span><span class="p">.</span><span class="n">OB_PROP_DEPTH_SOFT_FILTER_BOOL</span><span class="p">,</span><span class="w"> </span><span class="k">false</span><span class="p">);</span>
+<span class="n">Config</span><span class="w"> </span><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Config</span><span class="p">();</span>
+<span class="n">config</span><span class="p">.</span><span class="n">EnableStream</span><span class="p">(</span><span class="n">StreamType</span><span class="p">.</span><span class="n">OB_STREAM_DEPTH</span><span class="p">);</span>
+<span class="n">pipeline</span><span class="p">.</span><span class="n">Start</span><span class="p">(</span><span class="n">config</span><span class="p">);</span>
+<span class="c1">// Disable default software filters，This property must be set</span>
+<span class="n">device</span><span class="p">.</span><span class="n">SetBoolProperty</span><span class="p">(</span><span class="n">PropertyId</span><span class="p">.</span><span class="n">OB_PROP_DEPTH_SOFT_FILTER_BOOL</span><span class="p">,</span><span class="w"> </span><span class="k">false</span><span class="p">);</span>
+<span class="c1">// create filter</span>
+<span class="n">DisparityTransform</span><span class="w"> </span><span class="n">filter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">DisparityTransform</span><span class="p">();</span>
+<span class="c1">// Processes a frame synchronously.</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">frames</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pipeline</span><span class="p">.</span><span class="n">WaitForFrames</span><span class="p">(</span><span class="m">100</span><span class="p">)</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">depthFrame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">frames</span><span class="o">?.</span><span class="n">GetDepthFrame</span><span class="p">();</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">depthFrame</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="k">null</span><span class="p">)</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">processedFrame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">depthFrame</span><span class="p">;</span>
+<span class="c1">// The processed result</span>
+<span class="n">processedFrame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">filter</span><span class="p">.</span><span class="n">Process</span><span class="p">(</span><span class="n">processedFrame</span><span class="p">).</span><span class="n">As</span><span class="o">&lt;</span><span class="n">DepthFrame</span><span class="o">&gt;</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>The complete sample code can be found in /OrbbecSDK_CSharp/samples/4.post.processing.DisparityTransform,The DisparityTransform algorithm depends on the extensions library,The extension library is the same as SpatialAdvancedFilter.</p>
+</section>
+<section id="filterfactory">
+<h2><span class="section-number">3.7.8. </span>FilterFactory<a class="headerlink" href="#filterfactory" title="Permalink to this heading"></a></h2>
+<section id="common-filter">
+<h3><span class="section-number">3.7.8.1. </span>Common filter<a class="headerlink" href="#common-filter" title="Permalink to this heading"></a></h3>
+<div class="highlight-c# notranslate"><div class="highlight"><pre><span></span><span class="c1">// Create a SequenceIdFilter</span>
+<span class="n">SequenceIdFilter</span><span class="w"> </span><span class="n">filter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FilterFactory</span><span class="p">.</span><span class="n">CreateFilter</span><span class="p">(</span><span class="s">&quot;SequenceIdFilter&quot;</span><span class="p">).</span><span class="n">As</span><span class="o">&lt;</span><span class="n">SequenceIdFilter</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="c1">// For the usage of DecimationFilter, refer to section 4.6.1 of this document.</span>
+
+<span class="c1">// Create a DecimationFilter</span>
+<span class="n">DecimationFilter</span><span class="w"> </span><span class="n">filter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FilterFactory</span><span class="p">.</span><span class="n">CreateFilter</span><span class="p">(</span><span class="s">&quot;DecimationFilter&quot;</span><span class="p">).</span><span class="n">As</span><span class="o">&lt;</span><span class="n">DecimationFilter</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="c1">// For the usage of DecimationFilter, refer to section 4.6.2 of this document.</span>
+
+<span class="c1">// Create a ThresholdFilter</span>
+<span class="n">ThresholdFilter</span><span class="w"> </span><span class="n">filter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FilterFactory</span><span class="p">.</span><span class="n">CreateFilter</span><span class="p">(</span><span class="s">&quot;ThresholdFilter&quot;</span><span class="p">).</span><span class="n">As</span><span class="o">&lt;</span><span class="n">ThresholdFilter</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="c1">// For the usage of ThresholdFilter, refer to section 4.6.3 of this document.</span>
+</pre></div>
+</div>
+</section>
+<section id="private-filter">
+<h3><span class="section-number">3.7.8.2. </span>Private filter<a class="headerlink" href="#private-filter" title="Permalink to this heading"></a></h3>
+<div class="highlight-c# notranslate"><div class="highlight"><pre><span></span><span class="c1">// Disable default software filters</span>
+<span class="n">device</span><span class="p">.</span><span class="n">SetBoolProperty</span><span class="p">(</span><span class="n">PropertyId</span><span class="p">.</span><span class="n">OB_PROP_DEPTH_SOFT_FILTER_BOOL</span><span class="p">,</span><span class="w"> </span><span class="k">false</span><span class="p">);</span>
+<span class="c1">// Get the vendor specific code</span>
+<span class="kt">string</span><span class="w"> </span><span class="n">code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FilterFactory</span><span class="p">.</span><span class="n">GetFilterVendorSpecificCode</span><span class="p">(</span><span class="s">&quot;SpatialAdvancedFilter&quot;</span><span class="p">);</span>
+<span class="c1">// Create a private filter of SpatialAdvancedFilter</span>
+<span class="n">SpatialAdvancedFilter</span><span class="w"> </span><span class="n">filter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FilterFactory</span><span class="p">.</span><span class="n">CreatePrivateFilter</span><span class="p">(</span><span class="s">&quot;SpatialAdvancedFilter&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">code</span><span class="p">).</span><span class="n">As</span><span class="o">&lt;</span><span class="n">SpatialAdvancedFilter</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="c1">// For the usage of SpatialAdvancedFilter, refer to section 4.6.4 of this document.</span>
+
+
+<span class="kt">string</span><span class="w"> </span><span class="n">code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FilterFactory</span><span class="p">.</span><span class="n">GetFilterVendorSpecificCode</span><span class="p">(</span><span class="s">&quot;HoleFillingFilter&quot;</span><span class="p">);</span>
+<span class="c1">// Create a private filter of HoleFillingFilter</span>
+<span class="n">HoleFillingFilter</span><span class="w"> </span><span class="n">filter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FilterFactory</span><span class="p">.</span><span class="n">CreatePrivateFilter</span><span class="p">(</span><span class="s">&quot;HoleFillingFilter&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">code</span><span class="p">).</span><span class="n">As</span><span class="o">&lt;</span><span class="n">HoleFillingFilter</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="c1">// For the usage of HoleFillingFilter, refer to section 4.6.5 of this document.</span>
+
+
+<span class="kt">string</span><span class="w"> </span><span class="n">code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FilterFactory</span><span class="p">.</span><span class="n">GetFilterVendorSpecificCode</span><span class="p">(</span><span class="s">&quot;TemporalFilter&quot;</span><span class="p">);</span>
+<span class="c1">// Create a private filter of TemporalFilter</span>
+<span class="n">TemporalFilter</span><span class="w"> </span><span class="n">filter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FilterFactory</span><span class="p">.</span><span class="n">CreatePrivateFilter</span><span class="p">(</span><span class="s">&quot;TemporalFilter&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">code</span><span class="p">).</span><span class="n">As</span><span class="o">&lt;</span><span class="n">TemporalFilter</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="c1">// For the usage of TemporalFilter, refer to section 4.6.6 of this document.</span>
+
+
+<span class="kt">string</span><span class="w"> </span><span class="n">code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FilterFactory</span><span class="p">.</span><span class="n">GetFilterVendorSpecificCode</span><span class="p">(</span><span class="s">&quot;DisparityTransform&quot;</span><span class="p">);</span>
+<span class="c1">// Create a private filter of DisparityTransform</span>
+<span class="n">DisparityTransform</span><span class="w"> </span><span class="n">filter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FilterFactory</span><span class="p">.</span><span class="n">CreatePrivateFilter</span><span class="p">(</span><span class="s">&quot;DisparityTransform&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">code</span><span class="p">).</span><span class="n">As</span><span class="o">&lt;</span><span class="n">DisparityTransform</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="c1">// For the usage of DisparityTransform, refer to section 4.6.7 of this document.</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="sample-usage">
+<h2><span class="section-number">3.7.9. </span>Sample Usage<a class="headerlink" href="#sample-usage" title="Permalink to this heading"></a></h2>
+<section id="obtain-video-stream">
+<h3><span class="section-number">3.7.9.1. </span>Obtain Video Stream<a class="headerlink" href="#obtain-video-stream" title="Permalink to this heading"></a></h3>
+<div class="highlight-c# notranslate"><div class="highlight"><pre><span></span><span class="n">Pipeline</span><span class="w"> </span><span class="n">pipeline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Pipeline</span><span class="p">();</span>
+<span class="c1">// Get the device ande sensor, and get the liat of recommended filters for sensor</span>
+<span class="n">Device</span><span class="w"> </span><span class="n">device</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pipeline</span><span class="p">.</span><span class="n">GetDevice</span><span class="p">();</span>
+<span class="n">Sensor</span><span class="w"> </span><span class="n">sensor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">device</span><span class="p">.</span><span class="n">GetSensor</span><span class="p">(</span><span class="n">SensorType</span><span class="p">.</span><span class="n">OB_SENSOR_DEPTH</span><span class="p">);</span>
+<span class="n">List</span><span class="o">&lt;</span><span class="n">Filter</span><span class="o">&gt;</span><span class="w"> </span><span class="n">filterList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sensor</span><span class="p">.</span><span class="n">CreateRecommendedFilters</span><span class="p">();</span>
+
+<span class="c1">// Print the recommended filters</span>
+<span class="n">PrintFiltersInfo</span><span class="p">(</span><span class="n">filterList</span><span class="p">,</span><span class="w"> </span><span class="k">true</span><span class="p">);</span>
+
+<span class="c1">// Create a config with depth stream enabled</span>
+<span class="n">Config</span><span class="w"> </span><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Config</span><span class="p">();</span>
+<span class="n">config</span><span class="p">.</span><span class="n">EnableStream</span><span class="p">(</span><span class="n">StreamType</span><span class="p">.</span><span class="n">OB_STREAM_DEPTH</span><span class="p">);</span>
+
+<span class="c1">// Start the pipeline with config</span>
+<span class="n">pipeline</span><span class="p">.</span><span class="n">Start</span><span class="p">(</span><span class="n">config</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="printfiltersinfo-code">
+<h3><span class="section-number">3.7.9.2. </span>PrintFiltersInfo code<a class="headerlink" href="#printfiltersinfo-code" title="Permalink to this heading"></a></h3>
+<div class="highlight-c# notranslate"><div class="highlight"><pre><span></span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;{filterList.Count} post processing filters recommended:&quot;</span><span class="p">);</span>
+<span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">filter</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">filterList</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot; - {filter.Name()}: {(filter.IsEnabled() ? &quot;</span><span class="n">enabled</span><span class="s">&quot; : &quot;</span><span class="n">disabled</span><span class="s">&quot;)}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">configSchemaList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">filter</span><span class="p">.</span><span class="n">GetConfigSchemaList</span><span class="p">();</span>
+<span class="w">    </span><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">configSchema</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">configSchemaList</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;-{{{Marshal.PtrToStringAnsi(configSchema.name)}, {configSchema.type}, &quot;</span><span class="w"> </span><span class="o">+</span><span class="s">$&quot;{configSchema.min}, {configSchema.max},{configSchema.step}, {configSchema.def},{Marshal.PtrToStringAnsi(configSchema.desc)} }}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">isInit</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="n">filter</span><span class="p">.</span><span class="n">Enable</span><span class="p">(</span><span class="k">false</span><span class="p">);</span><span class="w"> </span><span class="c1">// Disable the filter</span>
+<span class="w">      </span><span class="n">AddCheckBox</span><span class="p">(</span><span class="n">filter</span><span class="p">);</span><span class="w"> </span><span class="c1">// Add filter switch control</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="filtercontrol-code">
+<h3><span class="section-number">3.7.9.3. </span>FilterControl code<a class="headerlink" href="#filtercontrol-code" title="Permalink to this heading"></a></h3>
+<p>When inputting a single character, output corresponding information according to character matching or exit the program.</p>
+<ul class="simple">
+<li><p>Enter filter name: Output the current configuration value.</p></li>
+</ul>
+<p><img alt="compile-11.png" src="../../_images/compile-11.png" /></p>
+<p>When inputting multiple characters, output corresponding information based on character matching or set filter configuration.</p>
+<ul class="simple">
+<li><p>Enter two characters: Output specific configuration list or all configuration lists.</p></li>
+</ul>
+<div class="highlight-c# notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">tokens</span><span class="p">.</span><span class="n">Length</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">2</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// List the config values for the filter</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="m">1</span><span class="p">].</span><span class="n">Equals</span><span class="p">(</span><span class="s">&quot;list&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">StringComparison</span><span class="p">.</span><span class="n">OrdinalIgnoreCase</span><span class="p">))</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Config schema for {filter.Name()}:&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">configSchema</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">filter</span><span class="p">.</span><span class="n">GetConfigSchemaList</span><span class="p">())</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot; - {{{Marshal.PtrToStringAnsi(configSchema.name)}, {configSchema.type}, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">$&quot;{configSchema.min}, {configSchema.max}, {configSchema.step}, {configSchema.def},{Marshal.PtrToStringAnsi(configSchema.desc)} }}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">   </span><span class="p">}</span>
+<span class="w">   </span><span class="k">else</span><span class="w"> </span><span class="c1">// Print the config schema for the filter</span>
+<span class="w">   </span><span class="p">{</span>
+<span class="w">      </span><span class="kt">var</span><span class="w"> </span><span class="n">configSchemaList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">filter</span><span class="p">.</span><span class="n">GetConfigSchemaList</span><span class="p">();</span>
+<span class="w">      </span><span class="kt">bool</span><span class="w"> </span><span class="n">foundConfig</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">false</span><span class="p">;</span>
+<span class="w">      </span><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="kt">var</span><span class="w"> </span><span class="n">configSchema</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">configSchemaList</span><span class="p">)</span>
+<span class="w">      </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Marshal</span><span class="p">.</span><span class="n">PtrToStringAnsi</span><span class="p">(</span><span class="n">configSchema</span><span class="p">.</span><span class="n">name</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">name</span><span class="p">.</span><span class="n">Equals</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="m">1</span><span class="p">],</span><span class="w"> </span><span class="n">StringComparison</span><span class="p">.</span><span class="n">OrdinalIgnoreCase</span><span class="p">))</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="n">foundConfig</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
+<span class="w">          </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Config values for {filter.Name()}@{name}: {filter.GetConfigValue(name)}&quot;</span><span class="p">);</span>
+<span class="w">          </span><span class="k">break</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">foundConfig</span><span class="p">)</span>
+<span class="w">      </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Error: Config {tokens[1]} not found for filter {filter.Name()}&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Enter three characters: output configuration value.</p></li>
+</ul>
+<div class="highlight-c# notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">tokens</span><span class="p">.</span><span class="n">Length</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">3</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">double</span><span class="w"> </span><span class="k">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">double</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="m">2</span><span class="p">]);</span>
+<span class="w">    </span><span class="n">filter</span><span class="p">.</span><span class="n">SetConfigValue</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="m">1</span><span class="p">],</span><span class="w"> </span><span class="k">value</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Success: Config value of {tokens[1]} for filter {filter.Name()} is set to {value}.&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The complete sample code can be found in /OrbbecSDK_CSharp/samples/3.advanced.post_processing</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Color_Parameter_Settings.html" class="btn btn-neutral float-left" title="3.6. Color Parameter Settings" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="HDR_Merge.html" class="btn btn-neutral float-right" title="3.8. HDR Merge" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, ORBBEC INC. www.orbbec.com..
+      <span class="lastupdated">Last updated on 2025-01-19 19:51:51.
+      </span></p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

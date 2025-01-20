@@ -1,0 +1,64 @@
+
+## Color Parameter Settings
+
+### Set Color AE
+
+```c#
+Pipeline pipeline = new Pipeline();
+Device device = pipeline.GetDevice();
+// True open color AE， False: close color AE
+device.SetBoolProperty(PropertyId.OB_PROP_DEPTH_AUTO_EXPOSURE_BOOL, true);
+```
+
+### Set Color Exposure
+
+```c#
+Pipeline pipeline = new Pipeline();
+Device device = pipeline.GetDevice();
+// True open color AE， False: close color AE
+device.SetBoolProperty(PropertyId.OB_PROP_COLOR_EXPOSURE_INT, true);
+```
+
+### Set Color Gain
+
+```c#
+Pipeline pipeline = new Pipeline();
+Device device = pipeline.GetDevice();
+// True open color AE， False: close color AE
+device.SetBoolProperty(PropertyId.OB_PROP_COLOR_GAIN_INT, true);
+```
+
+### Set Color Auto White Balance
+
+```c#
+Pipeline pipeline = new Pipeline();
+Device device = pipeline.GetDevice();
+// True: Turn on Auto White Balance，False: Turn off Auto White Balance
+device.SetBoolProperty(PropertyId.OB_PROP_COLOR_AUTO_WHITE_BALANCE_BOOL, true);
+```
+
+### Set Color White Balance Parameters
+
+```c#
+Pipeline pipeline = new Pipeline();
+Device device = pipeline.GetDevice();
+device.SetIntProperty(PropertyId.OB_PROP_COLOR_WHITE_BALANCE_INT, 5000);
+```
+
+### Set Color Power Line Frequency
+
+It is necessary to set 50Hz or 60Hz according to the power line frequency of different countries and regions. The purpose of setting the power supply frequency is to prevent Color images from flickering.
+
+```c#
+Pipeline pipeline = new Pipeline();
+Device device = pipeline.GetDevice();
+device.SetIntProperty(PropertyId.OB_PROP_COLOR_POWER_LINE_FREQUENCY_INT, ((int)PowerLineFreqMode.OB_POWER_LINE_FREQ_MODE_50HZ));
+```
+
+Remarks:
+
+PowerLineFreqMode.OB_POWER_LINE_FREQ_MODE_50HZ ：50HZ
+
+PowerLineFreqMode.OB_POWER_LINE_FREQ_MODE_60HZ ：60HZ
+
+PowerLineFreqMode.OB_POWER_LINE_FREQ_MODE_CLOSE ：Close

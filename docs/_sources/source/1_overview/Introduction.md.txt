@@ -1,0 +1,24 @@
+# Introduction
+
+This C# wrapper serves as an interface for the Orbbec SDK, offering a streamlined and user-friendly access point to the Orbbec camera functionality. It enables essential operations including the capture of depth and color images, as well as the generation of point clouds.
+
+Regarding the versioning of the C# wrapper, the 'v2-main' branch corresponds to the open source [Orbbec SDK v2](https://github.com/orbbec/OrbbecSDK_v2), whereas the 'main' branch C# wrapper corresponds to the close source [Orbbec SDK v1](https://github.com/orbbec/OrbbecSDK).
+
+*   Obtain Depth, IR, and Color data streams.
+    
+*   Obtain IMU data streams.
+    
+*   Hardware D2C, Software D2C, and Software C2D.
+    
+*   Obtain Depth point cloud and RGBD point cloud.
+    
+*   Obtain multiple devices data .
+    
+*   Coordinate transformations between different coordinate systems.
+    
+*   Post-processing filters and HDR merge functionality (supported by the Gemini 330 series).
+    
+*   Presets (supported by Gemini 330 series).
+    
+*   Update Firmware.
+    

@@ -1,0 +1,338 @@
+
+## Post-Processing Filter
+
+### SequenceIdFilter
+
+```c#
+// create pipeline
+Pipeline pipeline = new Pipeline();
+Config config = new Config();
+config.EnableStream(StreamType.OB_STREAM_DEPTH);
+pipeline.Start(config);
+// create filter
+SequenceIdFilter filter = new SequenceIdFilter();
+// process frame
+var frames = pipeline.WaitForFrames(100)
+var depthFrame = frames?.GetDepthFrame();
+if (depthFrame == null) continue;
+var processedFrame = depthFrame;
+// set param，for example, set the frame sequence number to 1
+filter.selectSequenceId(1);
+// The processed result
+processedFrame = filter.Process(processedFrame).As<DepthFrame>();
+```
+
+The complete sample code can be found in /OrbbecSDK_CSharp/samples/4.post.processing.SequenceIdFilter
+
+### DecimationFilter
+
+```c#
+// create pipeline
+Pipeline pipeline = new Pipeline();
+Config config = new Config();
+config.EnableStream(StreamType.OB_STREAM_DEPTH);
+pipeline.Start(config);
+// create filter
+DecimationFilter filter = new DecimationFilter();
+// process frame
+var frames = pipeline.WaitForFrames(100)
+var depthFrame = frames?.GetDepthFrame();
+if (depthFrame == null) continue;
+var processedFrame = depthFrame;
+// set param,for example, set the image size to be reduced by a factor of 2
+filter.setScaleValue(2);
+// The processed result
+processedFrame = filter.Process(processedFrame).As<DepthFrame>();
+```
+
+The complete sample code can be found in /OrbbecSDK_CSharp/samples/4.post.processing.DecimationFilter
+
+### ThresholdFilter
+
+```c#
+// create pipeline
+Pipeline pipeline = new Pipeline();
+Config config = new Config();
+config.EnableStream(StreamType.OB_STREAM_DEPTH);
+pipeline.Start(config);
+// create filter
+ThresholdFilter filter = new ThresholdFilter();
+// Processes a frame synchronously.
+var frames = pipeline.WaitForFrames(100)
+var depthFrame = frames?.GetDepthFrame();
+if (depthFrame == null) continue;
+var processedFrame = depthFrame;
+// Set the thresholds to a minimum value of 500 and a maximum value of 1000
+filter.setValueRange(500,1000);
+// The processed result
+processedFrame = filter.Process(processedFrame).As<DepthFrame>();
+```
+
+The complete sample code can be found in /OrbbecSDK_CSharp/samples/4.post.processing.ThresholdFilter
+
+### SpatialAdvancedFilter
+
+```c#
+// create pipeline
+Pipeline pipeline = new Pipeline();
+Device device = pipeline.GetDevice();              
+device.SetBoolProperty(PropertyId.OB_PROP_DEPTH_SOFT_FILTER_BOOL, false);
+Config config = new Config();
+config.EnableStream(StreamType.OB_STREAM_DEPTH);
+pipeline.Start(config);
+// Disable default software filters，This property must be set
+device.SetBoolProperty(PropertyId.OB_PROP_DEPTH_SOFT_FILTER_BOOL, false);
+// create filter
+SpatialAdvancedFilter filter = new SpatialAdvancedFilter();
+// Processes a frame synchronously.
+var frames = pipeline.WaitForFrames(100)
+var depthFrame = frames?.GetDepthFrame();
+if (depthFrame == null) continue;
+var processedFrame = depthFrame;
+// Set the filter params,SpatialAdvancedFilterParams is defined in the source code Filter.cs
+SpatialAdvancedFilterParams filterParams = new SpatialAdvancedFilterParams{
+  magnitude = 1,
+  alpha = 0.5f,
+  disp_diff = 160,
+  radius = 1};
+filter.setFilterParams(in filterParams);
+// The processed result
+processedFrame = filter.Process(processedFrame).As<DepthFrame>();
+```
+
+The complete sample code can be found in /OrbbecSDK_CSharp/samples/4.post.processing.SpatialAdvancedFilter,The SpatialAdvancedFilter algorithm depends on the extensions library ,as shown
+![compile-10.png](../image/compile-10.png)
+
+### HoleFillingFilter
+
+```c#
+// create pipeline
+Pipeline pipeline = new Pipeline();
+Device device = pipeline.GetDevice();              
+device.SetBoolProperty(PropertyId.OB_PROP_DEPTH_SOFT_FILTER_BOOL, false);
+Config config = new Config();
+config.EnableStream(StreamType.OB_STREAM_DEPTH);
+pipeline.Start(config);
+// Disable default software filters，This property must be set
+device.SetBoolProperty(PropertyId.OB_PROP_DEPTH_SOFT_FILTER_BOOL, false);
+// create filter
+HoleFillingFilter filter = new HoleFillingFilter();
+// Processes a frame synchronously.
+var frames = pipeline.WaitForFrames(100)
+var depthFrame = frames?.GetDepthFrame();
+if (depthFrame == null) continue;
+var processedFrame = depthFrame;
+// Set the filter params,HoleFillingMode is defined in the source code Filter.cs
+HoleFillingMode mode = HoleFillingMode.OB_HOLE_FILL_NEAREST;
+filter.setFilterMode(mode);
+// The processed result
+processedFrame = filter.Process(processedFrame).As<DepthFrame>();
+```
+
+The complete sample code can be found in /OrbbecSDK_CSharp/samples/4.post.processing.HoleFillingFilter,The HoleFillingFilter algorithm depends on the extensions library ,The extension library is the same as SpatialAdvancedFilter.
+
+### TemporalFilter
+
+```c#
+// create pipeline
+Pipeline pipeline = new Pipeline();
+Device device = pipeline.GetDevice();              
+device.SetBoolProperty(PropertyId.OB_PROP_DEPTH_SOFT_FILTER_BOOL, false);
+Config config = new Config();
+config.EnableStream(StreamType.OB_STREAM_DEPTH);
+pipeline.Start(config);
+// Disable default software filters，This property must be set
+device.SetBoolProperty(PropertyId.OB_PROP_DEPTH_SOFT_FILTER_BOOL, false);
+// create filter
+TemporalFilter filter = new TemporalFilter();
+// Processes a frame synchronously.
+var frames = pipeline.WaitForFrames(100)
+var depthFrame = frames?.GetDepthFrame();
+if (depthFrame == null) continue;
+var processedFrame = depthFrame;
+// Set the filter params
+filter.setDiffScale(0.1f);
+filter.setWeight(0.4f);
+// The processed result
+processedFrame = filter.Process(processedFrame).As<DepthFrame>();
+```
+
+The complete sample code can be found in /OrbbecSDK_CSharp/samples/4.post.processing.TemporalFilter,The TemporalFilter algorithm depends on the extensions library ,The extension library is the same as SpatialAdvancedFilter.
+
+### DisparityTransform
+
+```c#
+// create pipeline
+Pipeline pipeline = new Pipeline();
+Device device = pipeline.GetDevice();              
+device.SetBoolProperty(PropertyId.OB_PROP_DEPTH_SOFT_FILTER_BOOL, false);
+Config config = new Config();
+config.EnableStream(StreamType.OB_STREAM_DEPTH);
+pipeline.Start(config);
+// Disable default software filters，This property must be set
+device.SetBoolProperty(PropertyId.OB_PROP_DEPTH_SOFT_FILTER_BOOL, false);
+// create filter
+DisparityTransform filter = new DisparityTransform();
+// Processes a frame synchronously.
+var frames = pipeline.WaitForFrames(100)
+var depthFrame = frames?.GetDepthFrame();
+if (depthFrame == null) continue;
+var processedFrame = depthFrame;
+// The processed result
+processedFrame = filter.Process(processedFrame).As<DepthFrame>();
+```
+
+The complete sample code can be found in /OrbbecSDK_CSharp/samples/4.post.processing.DisparityTransform,The DisparityTransform algorithm depends on the extensions library,The extension library is the same as SpatialAdvancedFilter.
+
+### FilterFactory
+
+#### Common filter
+
+```c#
+// Create a SequenceIdFilter
+SequenceIdFilter filter = FilterFactory.CreateFilter("SequenceIdFilter").As<SequenceIdFilter>();
+// For the usage of DecimationFilter, refer to section 4.6.1 of this document.
+
+// Create a DecimationFilter
+DecimationFilter filter = FilterFactory.CreateFilter("DecimationFilter").As<DecimationFilter>();
+// For the usage of DecimationFilter, refer to section 4.6.2 of this document.
+
+// Create a ThresholdFilter
+ThresholdFilter filter = FilterFactory.CreateFilter("ThresholdFilter").As<ThresholdFilter>();
+// For the usage of ThresholdFilter, refer to section 4.6.3 of this document.
+
+```
+
+#### Private filter
+
+```c#
+// Disable default software filters
+device.SetBoolProperty(PropertyId.OB_PROP_DEPTH_SOFT_FILTER_BOOL, false);
+// Get the vendor specific code
+string code = FilterFactory.GetFilterVendorSpecificCode("SpatialAdvancedFilter");
+// Create a private filter of SpatialAdvancedFilter
+SpatialAdvancedFilter filter = FilterFactory.CreatePrivateFilter("SpatialAdvancedFilter", code).As<SpatialAdvancedFilter>();
+// For the usage of SpatialAdvancedFilter, refer to section 4.6.4 of this document.
+
+
+string code = FilterFactory.GetFilterVendorSpecificCode("HoleFillingFilter");
+// Create a private filter of HoleFillingFilter
+HoleFillingFilter filter = FilterFactory.CreatePrivateFilter("HoleFillingFilter", code).As<HoleFillingFilter>();
+// For the usage of HoleFillingFilter, refer to section 4.6.5 of this document.
+
+
+string code = FilterFactory.GetFilterVendorSpecificCode("TemporalFilter");
+// Create a private filter of TemporalFilter
+TemporalFilter filter = FilterFactory.CreatePrivateFilter("TemporalFilter", code).As<TemporalFilter>();
+// For the usage of TemporalFilter, refer to section 4.6.6 of this document.
+
+
+string code = FilterFactory.GetFilterVendorSpecificCode("DisparityTransform");
+// Create a private filter of DisparityTransform
+DisparityTransform filter = FilterFactory.CreatePrivateFilter("DisparityTransform", code).As<DisparityTransform>();
+// For the usage of DisparityTransform, refer to section 4.6.7 of this document.
+```
+
+### Sample Usage
+
+#### Obtain Video Stream
+
+```c#
+Pipeline pipeline = new Pipeline();
+// Get the device ande sensor, and get the liat of recommended filters for sensor
+Device device = pipeline.GetDevice();
+Sensor sensor = device.GetSensor(SensorType.OB_SENSOR_DEPTH);
+List<Filter> filterList = sensor.CreateRecommendedFilters();
+
+// Print the recommended filters
+PrintFiltersInfo(filterList, true);
+
+// Create a config with depth stream enabled
+Config config = new Config();
+config.EnableStream(StreamType.OB_STREAM_DEPTH);
+
+// Start the pipeline with config
+pipeline.Start(config);
+```
+
+#### PrintFiltersInfo code
+
+```c#
+Console.WriteLine($"{filterList.Count} post processing filters recommended:");
+foreach (var filter in filterList)
+{
+    Console.WriteLine($" - {filter.Name()}: {(filter.IsEnabled() ? "enabled" : "disabled")}");
+    var configSchemaList = filter.GetConfigSchemaList();
+    foreach (var configSchema in configSchemaList)
+    {
+        Console.WriteLine($"-{{{Marshal.PtrToStringAnsi(configSchema.name)}, {configSchema.type}, " +$"{configSchema.min}, {configSchema.max},{configSchema.step}, {configSchema.def},{Marshal.PtrToStringAnsi(configSchema.desc)} }}");
+    }
+
+    if (isInit)
+    {
+      filter.Enable(false); // Disable the filter
+      AddCheckBox(filter); // Add filter switch control
+    }
+}
+```
+
+#### FilterControl code
+
+When inputting a single character, output corresponding information according to character matching or exit the program.
+
+*   Enter filter name: Output the current configuration value.
+    
+![compile-11.png](../image/compile-11.png)
+
+When inputting multiple characters, output corresponding information based on character matching or set filter configuration.
+
+*   Enter two characters: Output specific configuration list or all configuration lists.
+    
+
+```c#
+if (tokens.Length == 2)
+{
+  // List the config values for the filter
+  if (tokens[1].Equals("list", StringComparison.OrdinalIgnoreCase))
+  {
+    Console.WriteLine($"Config schema for {filter.Name()}:");
+    foreach (var configSchema in filter.GetConfigSchemaList())
+    {
+      Console.WriteLine($" - {{{Marshal.PtrToStringAnsi(configSchema.name)}, {configSchema.type}, " + $"{configSchema.min}, {configSchema.max}, {configSchema.step}, {configSchema.def},{Marshal.PtrToStringAnsi(configSchema.desc)} }}");
+    }
+   }
+   else // Print the config schema for the filter
+   {
+      var configSchemaList = filter.GetConfigSchemaList();
+      bool foundConfig = false;
+      foreach ( var configSchema in configSchemaList)
+      {
+        string name = Marshal.PtrToStringAnsi(configSchema.name);
+        if (name.Equals(tokens[1], StringComparison.OrdinalIgnoreCase))
+        {
+          foundConfig = true;
+          Console.WriteLine($"Config values for {filter.Name()}@{name}: {filter.GetConfigValue(name)}");
+          break;
+        }
+      }
+      if (!foundConfig)
+      {
+        Console.WriteLine($"Error: Config {tokens[1]} not found for filter {filter.Name()}");
+      }
+    }
+  }
+```
+
+*   Enter three characters: output configuration value.
+    
+
+```c#
+if (tokens.Length == 3)
+{
+    double value = double.Parse(tokens[2]);
+    filter.SetConfigValue(tokens[1], value);
+    Console.WriteLine($"Success: Config value of {tokens[1]} for filter {filter.Name()} is set to {value}.");
+}
+```
+
+The complete sample code can be found in /OrbbecSDK_CSharp/samples/3.advanced.post_processing
